@@ -1,0 +1,44 @@
+{
+  "nodes": {
+    "adios": {
+      "locked": {
+        "lastModified": 1767983504,
+        "narHash": "sha256-fU87WH7vHdAjtBrT6KgNbwc/K1Iw2cKHEMf633D4lm8=",
+        "owner": "llakala",
+        "repo": "adios",
+        "rev": "557651beb3c87f12bfad5bacbe8fa0ab9fdc6b1b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "llakala",
+        "ref": "providers-and-consumers",
+        "repo": "adios",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1767892417,
+        "narHash": "sha256-dhhvQY67aboBk8b0/u0XB6vwHdgbROZT3fJAjyNh5Ww=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "3497aa5c9457a9d88d71fa93a4a8368816fbeeba",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "adios": "adios",
+        "nixpkgs": "nixpkgs"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
