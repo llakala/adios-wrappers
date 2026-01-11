@@ -45,7 +45,6 @@ You'll notice we referenced a file under `wrappers/default.nix`. This file shoul
   adios,
   adios-wrappers,
 }:
-
 let
   inherit (pkgs) lib;
 
@@ -95,7 +94,7 @@ Now, create a file under `wrappers/default.nix`, containing these contents:
 let
   pkgs = import sources.nixpkgs { };
   inherit (pkgs) lib;
-  adios = (import sources.adios).adios;
+  adios = import "${sources.adios}/adios";
   adios-wrappers = import sources.adios-wrappers { adiosPath = sources.adios.outPath; };
 
   # Allow overriding the vendored wrappers with your own config.
@@ -122,8 +121,6 @@ let
 in
 tree.root.modules
 ```
-
-This file will now be callable from other files.
 
 # Usage
 
