@@ -1,0 +1,327 @@
+{
+  "bat": {
+    "configFile": {
+      "description": "File containing the flags to be appended by default when running bat. Disjoint with the `flags` option.",
+      "type": "union<path,derivation,string>"
+    },
+    "flags": {
+      "description": "Flags to be appended by default when running bat. Disjoint with the `configFile` option.",
+      "type": "listOf<string>"
+    },
+    "package": {
+      "description": "The bat package to be wrapped.",
+      "type": "derivation"
+    }
+  },
+
+  "diff-so-fancy": {
+    "package": {
+      "description": "The diff-so-fancy package to be wrapped.",
+      "type": "derivation"
+    }
+  },
+
+  "firefox": {
+    "autoConfigFiles": {
+      "description": "`autoconfig.js` files to be injected into the wrapped package. See the Firefox documentation: https://support.mozilla.org/en-US/kb/customizing-firefox-using-autoconfig",
+      "type": "listOf<union<path,derivation,string>>"
+    },
+    "package": {
+      "description": "The Firefox package to be wrapped. Note that this should use a `-unwrapped` variant.",
+      "type": "derivation"
+    },
+    "policies": {
+      "description": "Policies to be injected into the wrapped package. `policies.Preferences` can be used to inject preferences. Disjoint with the `policiesFiles` option.",
+      "type": "attrs"
+    },
+    "policiesFiles": {
+      "description": "JSON files containing policies to be injected into the wrapped package. To inject preferences, code like this can be used: ```json {   \"policies\": {     \"Preferences\": {       \"YOUR_PREFERENCES\": \"here\"     }   } } ``` See the Firefox documentation: https://support.mozilla.org/en-US/kb/customizing-firefox-using-policiesjson Disjoint with the `policies` option.",
+      "type": "listOf<union<path,derivation,string>>"
+    }
+  },
+
+  "fish": {
+    "abbreviations": {
+      "description": "Custom abbreviations to be injected into the wrapped package. Each attribute should map an abbreviation to its expanded form.",
+      "mutatorType": "attrsOf<union<string,abbrWithCursor>>",
+      "type": "string"
+    },
+    "completions": {
+      "description": "Custom completions to be injected into the wrapped package. Each attribute should map the name of a command to inline fish script defining how the command should be completed. Disjoint with the `completionFiles` option.",
+      "type": "attrsOf<string>"
+    },
+    "completionsFiles": {
+      "description": "Files containing custom completions to be injected into the wrapped package. Disjoint with the `completions` option.",
+      "mutatorType": "listOf<union<path,derivation,string>>",
+      "type": "listOf<union<path,derivation,string>>"
+    },
+    "functions": {
+      "description": "Custom functions to be injected into the wrapped package. Each attribute should map the name of a function to inline fish script defining its functionality. Disjoint with the `functionsFiles` option.",
+      "type": "attrsOf<string>"
+    },
+    "functionsFiles": {
+      "description": "Files containing custom functions to be injected into the wrapped package. Disjoint with the `functions` option.",
+      "mutatorType": "listOf<union<path,derivation,string>>",
+      "type": "listOf<union<path,derivation,string>>"
+    },
+    "interactiveShellInit": {
+      "description": "Shell initialization code to be automatically injected into the wrapped package. Only ran when Fish is initalized interactively.",
+      "mutatorType": "string",
+      "type": "string"
+    },
+    "package": {
+      "description": "The Fish package to be wrapped.",
+      "type": "derivation"
+    }
+  },
+
+  "gh": {
+    "configDir": {
+      "description": "Folder containing gh configuration files to be injected into the wrapped package. This folder should contain a `config.yml` and/or a `hosts.yml`. Disjoint with the `settings` and `hosts` options.",
+      "type": "union<path,derivation,string>"
+    },
+    "hosts": {
+      "description": "Host information to be injected into the wrapped package's `hosts.yml`. Disjoint with the `configDir` option.",
+      "type": "attrs"
+    },
+    "package": {
+      "description": "The gh package to be wrapped.",
+      "type": "derivation"
+    },
+    "settings": {
+      "description": "Settings to be injected into the wrapped package's `config.yml`. See the documentation: https://cli.github.com/manual/gh_config Disjoint with the `configDir` option.",
+      "type": "attrs"
+    }
+  },
+
+  "git": {
+    "configFile": {
+      "description": "`gitconfig` file to be injected into the wrapped package. See the git documentation on the syntax of this file: https://git-scm.com/docs/git-config#_configuration_file And the documentation on valid options: https://git-scm.com/docs/git-config#_variables Disjoint with the `settings` option.",
+      "type": "union<path,derivation,string>"
+    },
+    "ignoreFile": {
+      "description": "File containing extra path globs to be ignored automatically, along with the repo-specific `.gitignore`. Disjoint with the `ignoredPaths` option.",
+      "type": "union<path,derivation,string>"
+    },
+    "ignoredPaths": {
+      "description": "Extra path globs to be ignored automatically, along with the repo-specific `.gitignore`. Disjoint with the `ignoreFile` option.",
+      "type": "listOf<string>"
+    },
+    "package": {
+      "description": "The git package to be wrapped.",
+      "type": "derivation"
+    },
+    "settings": {
+      "description": "Settings to be injected into the wrapped package's `gitconfig`. See the git documentation for valid options: https://git-scm.com/docs/git-config#_variables Disjoint with the `configFile` option.",
+      "mutatorType": "attrs",
+      "type": "attrs"
+    }
+  },
+
+  "kitty": {
+    "configFile": {
+      "description": "`kitty.conf` file to be injected into the wrapped package. See the kitty documentation: https://sw.kovidgoyal.net/kitty/conf.html Disjoint with the `settings` option.",
+      "type": "union<path,derivation,string>"
+    },
+    "package": {
+      "description": "The kitty package to be wrapped.",
+      "type": "derivation"
+    },
+    "settings": {
+      "description": "Settings to be injected into the wrapped package's `kitty.conf`. See the kitty documentation: https://sw.kovidgoyal.net/kitty/conf.html Disjoint with the `configFile` option.",
+      "type": "attrs"
+    },
+    "theme": {
+      "description": "Theme name from `pkgs.kitty-themes` to be used. Each of the files in this folder constitute a valid theme: https://github.com/kovidgoyal/kitty-themes/tree/master/themes",
+      "example": "Catppuccin-Mocha",
+      "type": "string"
+    },
+    "themeFile": {
+      "description": "Path containing a Kitty theme to be used.",
+      "type": "union<path,derivation,string>"
+    }
+  },
+
+  "less": {
+    "configFile": {
+      "description": "File containing flags to be automatically appended when running less. See the documentation for valid options: https://man7.org/linux/man-pages/man1/less.1.html#:~:text=OPTIONS,-top Disjoint with the `settings` option.",
+      "type": "union<path,derivation,string>"
+    },
+    "flags": {
+      "description": "Flags to be automatically appended when running less. See the documentation for valid options: https://man7.org/linux/man-pages/man1/less.1.html#:~:text=OPTIONS,-top Disjoint with the `configFile` option.",
+      "type": "listOf<string>"
+    },
+    "keybindsFile": {
+      "type": "union<path,derivation,string>"
+    },
+    "package": {
+      "description": "The less package to be wrapped.",
+      "type": "derivation"
+    }
+  },
+
+  "mkWrapper": {
+    "binaryPath": {
+      "description": "Path within the input derivation to the binary which should be wrapped",
+      "type": "string"
+    },
+    "environment": {
+      "default": {},
+      "description": "Environment variables to be set during the execution of the wrapped program",
+      "type": "attrsOf<union<null,union<path,derivation,string>,readFromFileAtRuntime>>"
+    },
+    "extraPaths": {
+      "default": [],
+      "description": "Extra derivations which should have their directory structures replicated in the final package.",
+      "type": "listOf<derivation>"
+    },
+    "flags": {
+      "default": [],
+      "description": "Flags to be automatically appended to the wrapped program.",
+      "type": "listOf<string>"
+    },
+    "name": {
+      "description": "The name of the package to be wrapped. This determines the pname of the wrapped package, as well as the derivation to be automatically run when using `nix run`.",
+      "type": "string"
+    },
+    "package": {
+      "description": "The package to be wrapped.",
+      "type": "derivation"
+    },
+    "postWrap": {
+      "default": "",
+      "description": "Commands to be run after the wrapping process in the build steps.",
+      "type": "string"
+    },
+    "preWrap": {
+      "default": "",
+      "description": "Commands to be run before the wrapping process in the build steps.",
+      "type": "string"
+    },
+    "symlinks": {
+      "default": {},
+      "description": "Symlinks to be included in the resulting derivation. Each key specifies the location within the derivation to create the symlink. Each value specifies where the symlink should be directed to.",
+      "type": "attrsOf<union<null,union<path,derivation,string>>>"
+    },
+    "wrapperArgs": {
+      "default": "",
+      "description": "Extra args passed directly to wrapProgram.",
+      "type": "string"
+    }
+  },
+
+  "nixpkgs": {
+    "lib": {
+      "type": "attrs"
+    },
+    "pkgs": {
+      "type": "attrs"
+    }
+  },
+
+  "ripgrep": {
+    "configFile": {
+      "description": "`ripgreprc` file, containing flags to be automatically appended when running ripgrep. See the documentation of valid flags: https://manpages.ubuntu.com/manpages/jammy/man1/rg.1.html#:~:text=OPTIONS This file should have each flag on its own line. See the documentation of the file's format: https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md#configuration-file Disjoint with the `configFile` option.",
+      "type": "union<path,derivation,string>"
+    },
+    "flags": {
+      "description": "Flags to be automatically appended when running ripgrep. See the documentation of valid flags: https://manpages.ubuntu.com/manpages/jammy/man1/rg.1.html#:~:text=OPTIONS Disjoint with the `configFile` option.",
+      "type": "listOf<string>"
+    },
+    "package": {
+      "description": "The ripgrep package to be wrapped.",
+      "type": "derivation"
+    }
+  },
+
+  "starship": {
+    "configFile": {
+      "description": "`starship.toml` file to be injected into the wrapped package. See the documentation for valid options: https://starship.rs/config/ Disjoint with the `settings` option.",
+      "type": "union<path,derivation,string>"
+    },
+    "package": {
+      "description": "The starship package to be wrapped.",
+      "type": "derivation"
+    },
+    "settings": {
+      "description": "Settings injected into the wrapped package's `starship.toml`. See the documentation for valid options: https://starship.rs/config/ Disjoint with the `configFile` option.",
+      "type": "attrs"
+    },
+    "wrapperAttrs": {
+      "description": "Attributes to be passed directly to the wrapped package's `mkWrapper` call. This is primarily an implementation detail of how the git module mutates the starship wrapper. Setting or mutating it yourself isn't recommended.",
+      "mutatorType": "attrs",
+      "mutators": [],
+      "type": "attrs"
+    }
+  },
+
+  "termfilechooser": {
+    "configFile": {
+      "description": "Configuration file to be injected into the wrapped package. See the termfilechooser documentation for valid options: https://github.com/hunkyburrito/xdg-desktop-portal-termfilechooser#configuration",
+      "type": "union<path,derivation,string>"
+    },
+    "package": {
+      "description": "The xdg-desktop-portal-termfilechooser package to be wrapped.",
+      "type": "derivation"
+    },
+    "settings": {
+      "description": "Settings injected into the wrapped package's configuration file. See the termfilechooser documentation for valid options: https://github.com/hunkyburrito/xdg-desktop-portal-termfilechooser#configuration",
+      "type": "attrs"
+    }
+  },
+
+  "yazi": {
+    "extraPackages": {
+      "description": "Packages to be automatically added as Yazi dependencies. This defaults to the optionalDeps of the Yazi package in nixpkgs, set here: https://github.com/NixOS/nixpkgs/blob/master/pkgs/by-name/ya/yazi/package.nix#L8",
+      "type": "listOf<derivation>"
+    },
+    "initLua": {
+      "description": "Lua script to be injected into the wrapped package's `init.lua`. See the documentation on how to use the Yazi API: https://yazi-rs.github.io/docs/plugins/overview Disjoint with the `initLuaFile` option.",
+      "type": "string"
+    },
+    "initLuaFile": {
+      "description": "`init.lua` file to be injected into the wrapped package. See the documentation on how to use the Yazi API: https://yazi-rs.github.io/docs/plugins/overview Disjoint with the `initLua` option.",
+      "type": "union<path,derivation,string>"
+    },
+    "keymap": {
+      "description": "Keybinds injected into the wrapped package's `keymap.toml`. See the documentation for valid options: https://yazi-rs.github.io/docs/configuration/keymap Disjoint with the `keymapFile` option.",
+      "type": "attrs"
+    },
+    "keymapFile": {
+      "description": "`keymap.toml` file to be injected into the wrapped package. See the documentation for valid options: https://yazi-rs.github.io/docs/configuration/keymap Disjoint with the `keymap` option.",
+      "type": "union<path,derivation,string>"
+    },
+    "package": {
+      "description": "The yazi package to be wrapped. Note that this should use a `-unwrapped` variant.",
+      "type": "derivation"
+    },
+    "plugins": {
+      "description": "Attribute set of plugins to be injected into the wrapped package. Each attribute should map the name of a plugin (suffixed with `.yazi`) to the path or derivation containing the plugin's contents.",
+      "type": "attrsOf<union<path,derivation,string>>"
+    },
+    "settings": {
+      "description": "Settings injected into the wrapped package's `yazi.toml`. See the documentation for valid options: https://yazi-rs.github.io/docs/configuration/yazi Disjoint with the `settingsFile` option.",
+      "type": "attrs"
+    },
+    "settingsFile": {
+      "description": "`yazi.toml` file to be injected into the wrapped package. See the documentation for valid options: https://yazi-rs.github.io/docs/configuration/yazi Disjoint with the `settings` option.",
+      "type": "union<path,derivation,string>"
+    }
+  },
+
+  "zoxide": {
+    "excludedDirs": {
+      "description": "Directory globs that won't be added to the database when navigating with zoxide.",
+      "type": "string"
+    },
+    "flags": {
+      "default": [],
+      "description": "Flags to be automatically appended when creating the zoxide shell integration. See the documentation of valid flags: https://github.com/ajeetdsouza/zoxide#flags",
+      "type": "listOf<string>"
+    },
+    "package": {
+      "description": "The zoxide package to be wrapped.",
+      "type": "derivation"
+    }
+  }
+}
