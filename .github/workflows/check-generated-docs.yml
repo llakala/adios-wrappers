@@ -2,6 +2,7 @@ name: Check generated docs
 
 on:
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
