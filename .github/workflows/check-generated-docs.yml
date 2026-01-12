@@ -27,4 +27,4 @@ jobs:
             > temp.json
 
       - name: Check that generated docs are the same
-        run: diff -q temp.json docs/options.json
+        run: diff temp.json docs/options.json
