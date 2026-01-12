@@ -38,14 +38,12 @@ You'll notice we referenced a file under `wrappers/default.nix`. This file shoul
   adios-wrappers,
 }:
 let
-  inherit (pkgs) lib;
-
   root = {
     name = "root";
-    modules = lib.recursiveUpdate adios-wrappers (adios.lib.importModules ./.);
+    modules = # TODO
   };
 
-  tree = (adios root).eval {
+  wrapperModules = (adios root).eval {
     options = {
       "/nixpkgs" = {
         inherit pkgs;
@@ -53,11 +51,11 @@ let
     };
   };
 in
-tree.root.modules
+# TODO: decide what to put here in the `usage` section
 ```
 
-Finally, add a devshell (if you don't have one already) to your flake outputs, to allow iterating your wrappers without
-a full system rebuild:
+Finally, add a devshell (if you don't have one already) to your flake outputs, to allow iterating on your wrappers
+without a full system rebuild:
 
 ```nix
 outputs = inputs: {
@@ -69,12 +67,14 @@ outputs = inputs: {
       default = pkgs.mkShellNoCC {
         allowSubstitutes = false; # Prevent a cache.nixos.org call every time
         packages = [
-          (wrappers.foo {})
-          (wrappers.bar {})
-          (wrappers.baz {})
+          wrappers.foo
+          wrappers.bar
+          wrappers.baz
         ];
       };
     }
-  );
+  ;
 };
 ```
+
+Now that you've installed adios-wrappers, feel fre to move onto the [usage instructions](./usage.md).
