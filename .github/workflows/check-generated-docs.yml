@@ -8,7 +8,7 @@ permissions:
   contents: read
 
 jobs:
-  nix-shell:
+  check-docs:
     runs-on: ubuntu-latest
     steps:
       - uses: cachix/install-nix-action@v30
@@ -22,12 +22,9 @@ jobs:
           nix-instantiate --eval --strict --quiet --json dev/generate-docs.nix \
             | jq \
             | sed 's/^  },$/  },\n/' \
-            | sed 's/\\\n"/"/' \
-            | sed -r 's/(\\\n)+/ /g' \
+            | sed 's/\\n"/"/' \
+            | sed -r 's/(\\n)+/ /g' \
             > temp.json
-
-      - name: Check contents of temp.json
-        run: cat temp.json
 
       - name: Check that generated docs are the same
         run: diff -q temp.json docs/options.json
