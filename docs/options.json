@@ -216,6 +216,27 @@
     }
   },
 
+  "nushell": {
+    "config": {
+      "description": "Config to be injected into the wrapped package's `config.nu`. See the nushell documentation for valid options: https://www.nushell.sh/book/configuration.html Disjoint with the `configFile` option.",
+      "mutatorType": "string",
+      "type": "string"
+    },
+    "configFile": {
+      "description": "`config.nu` file to be injected into the wrapped package. See the nushell documentation on file syntax: https://www.nushell.sh/book/configuration.html Disjoint with the `config` option.",
+      "type": "union<path,derivation,string>"
+    },
+    "environment": {
+      "description": "Attrset of environment variables to be injected into the wrapped packages `config.nu`. See the nushell documentation for valid options: https://www.nushell.sh/book/configuration.html Example: ``` {   HELLO = \"test\";   FOO = \"3\"; } ``` Maps to: ``` $env.HELLO = \"test\" $env.FOO = \"3\" Disjoint with the `environmentFile` option. ```",
+      "mutatorType": "attrs",
+      "type": "attrs"
+    },
+    "environmentFile": {
+      "description": "`env.nu` file to be injected into the wrapped package. See the nushell documentaion on file sytax: https://www.nushell.sh/book/configuration.html Disjoint with the `environment` option.",
+      "type": "union<path,derivation,string>"
+    }
+  },
+
   "ripgrep": {
     "configFile": {
       "description": "`ripgreprc` file, containing flags to be automatically appended when running ripgrep. See the documentation of valid flags: https://manpages.ubuntu.com/manpages/jammy/man1/rg.1.html#:~:text=OPTIONS This file should have each flag on its own line. See the documentation of the file's format: https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md#configuration-file Disjoint with the `configFile` option.",
