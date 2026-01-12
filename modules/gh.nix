@@ -11,7 +11,7 @@ in {
 
   options = {
     settings = {
-      type = types.attrs;
+      type = types.int;
       description = ''
         Settings to be injected into the wrapped package's `config.yml`.
 
