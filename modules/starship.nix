@@ -13,7 +13,7 @@ in {
     settings = {
       type = types.attrs;
       description = ''
-        Settings injected into the wrapped package's `starship.toml`.
+        Settings to be injected into the wrapped package's `starship.toml`.
 
         See the documentation for valid options:
         https://starship.rs/config/

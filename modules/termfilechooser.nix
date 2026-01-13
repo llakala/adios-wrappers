@@ -13,7 +13,7 @@ in {
     settings = {
       type = types.attrs;
       description = ''
-        Settings injected into the wrapped package's configuration file.
+        Settings to be injected into the wrapped package's configuration file.
 
         See the termfilechooser documentation for valid options:
         https://github.com/hunkyburrito/xdg-desktop-portal-termfilechooser#configuration

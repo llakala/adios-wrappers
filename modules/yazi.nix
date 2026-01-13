@@ -13,7 +13,7 @@ in {
     settings = {
       type = types.attrs;
       description = ''
-        Settings injected into the wrapped package's `yazi.toml`.
+        Settings to be injected into the wrapped package's `yazi.toml`.
 
         See the documentation for valid options:
         https://yazi-rs.github.io/docs/configuration/yazi

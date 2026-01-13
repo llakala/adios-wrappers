@@ -266,7 +266,7 @@
       "type": "derivation"
     },
     "settings": {
-      "description": "Settings injected into the wrapped package's `starship.toml`. See the documentation for valid options: https://starship.rs/config/ Disjoint with the `configFile` option.",
+      "description": "Settings to be injected into the wrapped package's `starship.toml`. See the documentation for valid options: https://starship.rs/config/ Disjoint with the `configFile` option.",
       "type": "attrs"
     },
     "wrapperAttrs": {
@@ -287,7 +287,7 @@
       "type": "derivation"
     },
     "settings": {
-      "description": "Settings injected into the wrapped package's configuration file. See the termfilechooser documentation for valid options: https://github.com/hunkyburrito/xdg-desktop-portal-termfilechooser#configuration",
+      "description": "Settings to be injected into the wrapped package's configuration file. See the termfilechooser documentation for valid options: https://github.com/hunkyburrito/xdg-desktop-portal-termfilechooser#configuration",
       "type": "attrs"
     }
   },
@@ -322,7 +322,7 @@
       "type": "attrsOf<union<path,derivation,string>>"
     },
     "settings": {
-      "description": "Settings injected into the wrapped package's `yazi.toml`. See the documentation for valid options: https://yazi-rs.github.io/docs/configuration/yazi Disjoint with the `settingsFile` option.",
+      "description": "Settings to be injected into the wrapped package's `yazi.toml`. See the documentation for valid options: https://yazi-rs.github.io/docs/configuration/yazi Disjoint with the `settingsFile` option.",
       "type": "attrs"
     },
     "settingsFile": {
