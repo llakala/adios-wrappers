@@ -2,7 +2,7 @@ Thank you for wanting to contribute to the project!
 
 More modules and options are always welcome. However, they're expected to follow some style guides.
 
-# RFC42 and impure options
+## RFC42 and impure options
 
 Each option should have an RFC42 variant and an impure path variant.
 
@@ -30,7 +30,7 @@ Here's an example module that adds both:
     settings = {
       type = types.attrs;
       description = ''
-        Settings injected into the wrapped package's `foo.toml`.
+        Settings to be injected into the wrapped package's `foo.toml`.
 
         See the documentation for valid options:
         https://fake.website.com
@@ -62,11 +62,61 @@ Here's an example module that adds both:
 }
 ```
 
-# Description guidelines
+## Description guidelines
+
+All newly introduced options should come with descriptions. These descriptions should follow the established format
+that's been used in the other modules. To ease this experience, a template is provided for the most common types of
+option.
+
+### `settings`
+
+```nix
+description = ''
+  Settings to be injected into the wrapped package's `$FILE_NAME`.
+
+  See the documentation for $DOCS_REASON:
+  $DOCS_LINK_HERE
+
+  Disjoint with the `configDir` option.
+'';
+```
+
+The documentation section is optional if there's not a good link, but trying to find one would be nice.
+
+### `configFile`
+
+```nix
+description = ''
+  `$FILE_NAME` file to be injected into the wrapped package.
+
+  See the documentation for $DOCS_REASON:
+  $DOCS_LINK_HERE
+
+  Disjoint with the `settings` option.
+'';
+```
+
+### `flags`
+
+```nix
+description = ''
+  Flags to be automatically appended when running $PROGRAM_NAME.
+
+  See the documentation for $DOCS_REASON:
+  $DOCS_LINK_HERE
+
+  Disjoint with the `$DISJOINT_OPTION` option.
+'';
+```
+
+### `package`
+
+```nix
+description = "The $program_name package to be wrapped.";
+```
+
+## mkWrapper usage
 TODO
 
-# mkWrapper usage
-TODO
-
-# Docs generation
+## Docs generation
 TODO
