@@ -133,6 +133,37 @@
     }
   },
 
+  "helix": {
+    "extraPackages": {
+      "description": "Packages to be automatically added to helix's path. Mainly used to set language servers and formatters.",
+      "type": "listOf<derivation>"
+    },
+    "languages": {
+      "description": "Languages to be injected into the wrapped package's `languages.toml`. See the documentation for valid options: https://docs.helix-editor.com/languages.html Disjoint with the `languagesFile` option.",
+      "type": "attrs"
+    },
+    "languagesFile": {
+      "description": "`languages.toml` file to be injected into the wrapped package. See the documentation on valid options: https://docs.helix-editor.com/languages.html Disjoint with the `languages` option.",
+      "type": "pathLike"
+    },
+    "settings": {
+      "description": "Settings to be injected into the wrapped package's `config.toml`. See the documentation: https://docs.helix-editor.com/configuration.html Disjoint with the `configFile` option.",
+      "type": "attrs"
+    },
+    "settingsFile": {
+      "description": "`config.toml` file to be injected into the wrapped package. See the documentation for valid options: https://docs.helix-editor.com/configuration.html Disjoint with the `config` option.",
+      "type": "pathLike"
+    },
+    "themeDir": {
+      "description": "Folder containing theme configuration files to be injected into the wrapped package. This folder should contain one or multiple `$theme_name.toml` files. Disjoint with the `themes` option.",
+      "type": "pathLike"
+    },
+    "themes": {
+      "description": "An attrset of custom themes, mapping the name of a theme to its settings. See the documentation for valid options: https://docs.helix-editor.com/themes.html Disjoint with the `themeDir` option.",
+      "type": "attrsOf<attrs>"
+    }
+  },
+
   "kitty": {
     "configFile": {
       "description": "`kitty.conf` file to be injected into the wrapped package. See the kitty documentation: https://sw.kovidgoyal.net/kitty/conf.html Disjoint with the `settings` option.",
