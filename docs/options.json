@@ -357,6 +357,33 @@
     }
   },
 
+  "waybar": {
+    "barStyle": {
+      "description": "CSS to be injected into the wrapped package's `style.css`. See the documentation for writing waybar themes: https://github.com/Alexays/Waybar/wiki/Styling Disjoint with the `cssFile` option.",
+      "type": "string"
+    },
+    "configFile": {
+      "description": "`config.jsonc` file to be injected into the wrapped package. See the documentation for syntax and valid options: https://github.com/Alexays/Waybar/wiki/Configuration Disjoint with the `settings` option.",
+      "type": "pathLike"
+    },
+    "cssFile": {
+      "description": "`style.css` file to be injected into the wrapped package. See the documentation for writing waybar themes: https://github.com/Alexays/Waybar/wiki/Styling Live reloading of themes can be accomplished with an impure path and options.interactiveEnv set to true. Disjoint with the `barStyle` option.",
+      "type": "pathLike"
+    },
+    "interactiveEnv": {
+      "description": "Sets GTK_DEBUG=interactive to launch the wrapped package with the GTK CSS Inspector. See the documentation for use of the inspection tool: https://developer.gnome.org/documentation/tools/inspector.html Can be used with an impure path in options.cssFile to enable live theme reloading.",
+      "type": "bool"
+    },
+    "package": {
+      "description": "The waybar package to be wrapped.",
+      "type": "derivation"
+    },
+    "settings": {
+      "description": "Settings to be injected into the wrapped package's `config.jsonc`. See the documentation for valid options: https://github.com/Alexays/Waybar/wiki/Configuration Disjoint with the `configFile` option.",
+      "type": "attrs"
+    }
+  },
+
   "yazi": {
     "extraPackages": {
       "description": "Packages to be automatically added as Yazi dependencies. This defaults to the optionalDeps of the Yazi package in nixpkgs, set here: https://github.com/NixOS/nixpkgs/blob/master/pkgs/by-name/ya/yazi/package.nix#L8",
