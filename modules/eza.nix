@@ -58,7 +58,7 @@ in {
         mkdir -p $out/eza-config
       '';
       symlinks = {
-        "$out/config/theme.yml" =
+        "$out/eza-config/theme.yml" =
           if options ? themeFile then
             options.themeFile
           else if options ? themeConfig then
