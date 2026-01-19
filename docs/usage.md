@@ -121,5 +121,5 @@ root = {
 And replace the second TODO comment with:
 ```nix
 in
-builtins.mapAttrs (module: module {}) wrapperModules.root.modules
+builtins.mapAttrs (_: module: module {}) wrapperModules.root.modules
 ```
