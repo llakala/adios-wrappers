@@ -21,6 +21,30 @@
     }
   },
 
+  "discordo": {
+    "configFile": {
+      "description": "`config.toml` file to be injected into the wrapped package. See the default configuration for valid options: https://github.com/ayn2op/discordo/blob/main/internal/config/config.toml Disjoint with the `settings` option.",
+      "type": "pathLike"
+    },
+    "flags": {
+      "default": [],
+      "description": "Flags to be automatically appended when running discordo.",
+      "type": "listOf<string>"
+    },
+    "package": {
+      "description": "The discordo package to be wrapped.",
+      "type": "derivation"
+    },
+    "settings": {
+      "description": "Settings to be injected into the wrapped package's 'config.toml'. See the default configuration for valid options: https://github.com/ayn2op/discordo/blob/main/internal/config/config.toml Disjoint with the `configFile` option.",
+      "type": "attrs"
+    },
+    "tokenFile": {
+      "description": "A file containing a discord token which is read at runtime and injected into the wrapped package's environment. I recommend using a solution like [sops-nix](https://github.com/Mic92/sops-nix) or [agenix](https://github.com/ryantm/agenix) to encrypt your token.",
+      "type": "pathLike"
+    }
+  },
+
   "eza": {
     "flags": {
       "description": "Flags to be appended by default when running eza.",
