@@ -43,8 +43,7 @@ in {
   impl =
     { options, inputs }:
     let
-      inherit (inputs.nixpkgs) pkgs;
-      generator = pkgs.formats.toml {};
+      generator = inputs.nixpkgs.pkgs.formats.toml {};
     in
     assert !(options ? settings && options ? configFile);
       inputs.mkWrapper {
@@ -60,5 +59,6 @@ in {
               then generator.generate "alacritty.toml" options.settings
             else null;
         };
+        flags = ["--config-file" "$out/alacritty/alacritty.toml"];
       };
 }
