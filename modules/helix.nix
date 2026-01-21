@@ -33,6 +33,7 @@ in
         Disjoint with the `config` option.
       '';
     };
+
     themes = {
       type = types.attrsOf types.attrs;
       description = ''
@@ -54,6 +55,7 @@ in
         Disjoint with the `themes` option.
       '';
     };
+
     languages = {
       type = types.attrs;
       description = ''
@@ -76,18 +78,25 @@ in
         Disjoint with the `languages` option.
       '';
     };
+
     extraPackages = {
       type = types.listOf types.derivation;
       description = ''
         Packages to be automatically added to helix's path. Mainly used to set language servers and formatters.
       '';
     };
+
+    package = {
+      type = types.derivation;
+      description = "The helix package to be wrapped.";
+      defaultFunc = { inputs }: inputs.nixpkgs.pkgs.helix;
+    };
   };
 
   impl =
     { options, inputs }:
     let
-      inherit (inputs.nixpkgs.pkgs) formats helix;
+      inherit (inputs.nixpkgs.pkgs) formats;
       inherit (builtins) listToAttrs attrNames;
       inherit (inputs.nixpkgs.lib) makeBinPath;
       tomlGenerator = formats.toml { };
@@ -113,7 +122,7 @@ in
     assert !(options ? themes && options ? themeDir);
     assert !(options ? languages && options ? languageDir);
     inputs.mkWrapper {
-      package = helix;
+      inherit (options) package;
       binaryPath = "$out/bin/hx";
       preWrap = ''
         mkdir -p $out/helix/themes

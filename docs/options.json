@@ -189,6 +189,10 @@
       "description": "`languages.toml` file to be injected into the wrapped package. See the documentation on valid options: https://docs.helix-editor.com/languages.html Disjoint with the `languages` option.",
       "type": "pathLike"
     },
+    "package": {
+      "description": "The helix package to be wrapped.",
+      "type": "derivation"
+    },
     "settings": {
       "description": "Settings to be injected into the wrapped package's `config.toml`. See the documentation: https://docs.helix-editor.com/configuration.html Disjoint with the `configFile` option.",
       "type": "attrs"
