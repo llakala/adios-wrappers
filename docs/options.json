@@ -177,6 +177,10 @@
   },
 
   "helix": {
+    "configFile": {
+      "description": "`config.toml` file to be injected into the wrapped package. See the documentation for valid options: https://docs.helix-editor.com/configuration.html Disjoint with the `config` option.",
+      "type": "pathLike"
+    },
     "extraPackages": {
       "description": "Packages to be automatically added to helix's path. Mainly used to set language servers and formatters.",
       "type": "listOf<derivation>"
@@ -196,10 +200,6 @@
     "settings": {
       "description": "Settings to be injected into the wrapped package's `config.toml`. See the documentation: https://docs.helix-editor.com/configuration.html Disjoint with the `configFile` option.",
       "type": "attrs"
-    },
-    "settingsFile": {
-      "description": "`config.toml` file to be injected into the wrapped package. See the documentation for valid options: https://docs.helix-editor.com/configuration.html Disjoint with the `config` option.",
-      "type": "pathLike"
     },
     "themeDir": {
       "description": "Folder containing theme configuration files to be injected into the wrapped package. This folder should contain one or multiple `$theme_name.toml` files. Disjoint with the `themes` option.",

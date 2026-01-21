@@ -22,7 +22,7 @@ in
         Disjoint with the `configFile` option.
       '';
     };
-    settingsFile = {
+    configFile = {
       type = types.pathLike;
       description = ''
         `config.toml` file to be injected into the wrapped package.
@@ -129,7 +129,7 @@ in
       '';
       symlinks = {
         "$out/helix/config.toml" =
-          if options ? settingsFile then
+          if options ? configFile then
             options.settingsFile
           else if options ? settings then
             generator.generate "config.toml" options.settings
