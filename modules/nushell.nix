@@ -11,7 +11,7 @@ in
   };
 
   options = {
-    config = {
+    settings = {
       type = types.string;
       description = ''
         Config to be injected into the wrapped package's `config.nu`.
@@ -95,17 +95,27 @@ in
       inherit (inputs.nixpkgs.pkgs) writeText;
       format =
         input: concatStringsSep "\n" (mapAttrsToList (name: value: "$env.${name} = \"${value}\"") input);
-      generatedConfig = options.configFile or (writeText "config.nu" options.config);
-      generatedEnv = options.environmentFile or (writeText "env.nu" (format options.environment));
+
+      configFlag =
+        if options ? configFile then
+          [ "--config ${options.configFile}" ]
+        else if options ? settings then
+          [ "--config ${writeText "config.nu" options.settings}" ]
+        else
+          [ ];
+      envFlag =
+        if options ? environmentFile then
+          [ "--env-config ${options.enironmentFile} "]
+        else if options ? environment then
+          [ "--env-config ${writeText "env.nu" (format options.environment)}" ]
+        else
+          [ ];
     in
     assert !(options ? config && options ? configFile);
     assert !(options ? environment && options ? environmentFile);
     inputs.mkWrapper {
       package = options.package;
       binaryPath = "$out/bin/nu";
-      flags = [
-        "--config ${generatedConfig}"
-        "--env-config ${generatedEnv}"
-      ];
+      flags = configFlag ++ envFlag;
     };
 }

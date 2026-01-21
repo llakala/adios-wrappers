@@ -325,11 +325,6 @@
   },
 
   "nushell": {
-    "config": {
-      "description": "Config to be injected into the wrapped package's `config.nu`. See the nushell documentation for valid options: https://www.nushell.sh/book/configuration.html Disjoint with the `configFile` option.",
-      "mutatorType": "string",
-      "type": "string"
-    },
     "configFile": {
       "description": "`config.nu` file to be injected into the wrapped package. See the nushell documentation on file syntax: https://www.nushell.sh/book/configuration.html Disjoint with the `config` option.",
       "type": "pathLike"
@@ -346,6 +341,11 @@
     "package": {
       "description": "The nushell package to be wrapped.",
       "type": "derivation"
+    },
+    "settings": {
+      "description": "Config to be injected into the wrapped package's `config.nu`. See the nushell documentation for valid options: https://www.nushell.sh/book/configuration.html Disjoint with the `configFile` option.",
+      "mutatorType": "string",
+      "type": "string"
     }
   },
 
