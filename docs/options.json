@@ -29,6 +29,21 @@
     }
   },
 
+  "bottom": {
+    "configFile": {
+      "description": "`bottom.toml` file to be injected into the wrapped package. See the bottom documentation for valid options: https://bottom.pages.dev/nightly/configuration/config-file/ Disjoint with the `settings` option.",
+      "type": "pathLike"
+    },
+    "package": {
+      "description": "The bottom package to be wrapped.",
+      "type": "derivation"
+    },
+    "settings": {
+      "description": "Settings to be injected into the wrapped package's `bottom.toml`. See the bottom documentation for valid options: https://bottom.pages.dev/nightly/configuration/config-file/ Disjoint with the `configFile` option.",
+      "type": "attrs"
+    }
+  },
+
   "diff-so-fancy": {
     "package": {
       "description": "The diff-so-fancy package to be wrapped.",
