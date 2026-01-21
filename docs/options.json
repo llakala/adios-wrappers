@@ -1,4 +1,19 @@
 {
+  "alacritty": {
+    "configFile": {
+      "description": "`alacritty.toml` file to be injected into the wrapped package. See the alacritty documentation: https://alacritty.org/config-alacritty.html Disjoint with the `settings` option.",
+      "type": "pathLike"
+    },
+    "package": {
+      "description": "The alacritty package to be wrapped.",
+      "type": "derivation"
+    },
+    "settings": {
+      "description": "Settings to be injected into the wrapped package's `alacritty.toml`. See the alacritty documentation: https://alacritty.org/config-alacritty.html Disjoint with the `configFile` option.",
+      "type": "attrs"
+    }
+  },
+
   "bat": {
     "configFile": {
       "description": "File containing the flags to be appended by default when running bat. Disjoint with the `flags` option.",
