@@ -413,6 +413,10 @@
       "description": "Packages to be automatically added as Yazi dependencies. This defaults to the optionalDeps of the Yazi package in nixpkgs, set here: https://github.com/NixOS/nixpkgs/blob/master/pkgs/by-name/ya/yazi/package.nix#L8",
       "type": "listOf<derivation>"
     },
+    "flavors": {
+      "description": "Attribute set of flavors to be injected into the wrapped package. Each attribute should map the name of a flavor (suffixed with `.yazi`) to the path or derivation containing the flavor's contents.",
+      "type": "attrsOf<pathLike>"
+    },
     "initLua": {
       "description": "Lua script to be injected into the wrapped package's `init.lua`. See the documentation on how to use the Yazi API: https://yazi-rs.github.io/docs/plugins/overview Disjoint with the `initLuaFile` option.",
       "type": "string"
@@ -443,6 +447,14 @@
     },
     "settingsFile": {
       "description": "`yazi.toml` file to be injected into the wrapped package. See the documentation for valid options: https://yazi-rs.github.io/docs/configuration/yazi Disjoint with the `settings` option.",
+      "type": "pathLike"
+    },
+    "theme": {
+      "description": "Theme settings to be injected into the wrapped package's `theme.toml`. See the documentation for valid options: https://yazi-rs.github.io/docs/configuration/theme/ Disjoint with the `themeFile` option.",
+      "type": "attrs"
+    },
+    "themeFile": {
+      "description": "`theme.toml` file to be injected into the wrapped package. See the documentation for valid options: https://yazi-rs.github.io/docs/configuration/theme/ Disjoint with the `theme` option.",
       "type": "pathLike"
     }
   },

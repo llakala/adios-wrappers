@@ -56,6 +56,29 @@ in {
       '';
     };
 
+    theme = {
+      type = types.attrs;
+      description = ''
+        Theme settings to be injected into the wrapped package's `theme.toml`.
+
+        See the documentation for valid options:
+        https://yazi-rs.github.io/docs/configuration/theme/
+
+        Disjoint with the `themeFile` option.
+      '';
+    };
+    themeFile = {
+      type = types.pathLike;
+      description = ''
+        `theme.toml` file to be injected into the wrapped package.
+
+        See the documentation for valid options:
+        https://yazi-rs.github.io/docs/configuration/theme/
+
+        Disjoint with the `theme` option.
+      '';
+    };
+
     initLua = {
       type = types.string;
       description = ''
@@ -111,6 +134,14 @@ in {
         Each attribute should map the name of a plugin (suffixed with `.yazi`) to the path or derivation containing the plugin's contents.
       '';
     };
+    flavors = {
+      type = types.attrsOf types.pathLike;
+      description = ''
+        Attribute set of flavors to be injected into the wrapped package.
+
+        Each attribute should map the name of a flavor (suffixed with `.yazi`) to the path or derivation containing the flavor's contents.
+      '';
+    };
     package = {
       type = types.derivation;
       description = ''
@@ -136,6 +167,7 @@ in {
       inherit (options) package;
       preWrap = ''
         mkdir -p $out/yazi/plugins
+        mkdir -p $out/yazi/flavors
       '';
       symlinks = {
         "$out/yazi/yazi.toml" =
@@ -152,6 +184,13 @@ in {
             generator.generate "keymap.toml" options.keymap
           else
             null;
+        "$out/yazi/theme.toml" =
+          if options ? themeFile then
+            options.themeFile
+          else if options ? theme then
+            generator.generate "theme.toml" options.theme
+          else
+            null;
         "$out/yazi/init.lua" =
           if options ? initLuaFile then
             options.initLuaFile
@@ -165,6 +204,12 @@ in {
           name = "$out/yazi/plugins/${name}";
           value = options.plugins.${name};
         }) (attrNames options.plugins)
+      )
+      // listToAttrs (
+        map (name: {
+          name = "$out/yazi/flavors/${name}";
+          value = options.flavors.${name};
+        }) (attrNames options.flavors)
       );
       wrapperArgs = ''
         --prefix PATH : ${makeBinPath options.extraPackages}
