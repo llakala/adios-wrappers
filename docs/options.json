@@ -568,5 +568,37 @@
       "description": "The zoxide package to be wrapped.",
       "type": "derivation"
     }
+  },
+
+  "zsh": {
+    "extraPackages": {
+      "description": "Runtime dependencies to be injected into the wrapped package's path.",
+      "mutatorType": "listOf<pathLike>",
+      "type": "listOf<derivation>"
+    },
+    "extraZshrc": {
+      "description": "zsh script to be injected at the end of the wrapped package's `.zshrc`. Disjoint with the `zshrcFiles` option.",
+      "mutatorType": "string",
+      "type": "string"
+    },
+    "extraZshrcFiles": {
+      "description": "zsh files to be sourced at the end of the wrapped package's `.zshrc` file. Disjoint with the `zshrc` option.:",
+      "mutatorType": "listOf<pathLike>",
+      "type": "listOf<pathLike>"
+    },
+    "package": {
+      "description": "The zsh package to be wrapped.",
+      "type": "derivation"
+    },
+    "zshrc": {
+      "description": "zsh script to be injected into the wrapped package's `.zshrc`. Disjoint with the `zshrcFiles` option.",
+      "mutatorType": "string",
+      "type": "string"
+    },
+    "zshrcFiles": {
+      "description": "zsh files to be sourced in the wrapped package's `.zshrc` file. Disjoint with the `zshrc` option.",
+      "mutatorType": "listOf<pathLike>",
+      "type": "listOf<pathLike>"
+    }
   }
 }
