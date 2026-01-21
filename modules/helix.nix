@@ -99,7 +99,7 @@ in
       inherit (inputs.nixpkgs.pkgs) formats;
       inherit (builtins) listToAttrs attrNames;
       inherit (inputs.nixpkgs.lib) makeBinPath;
-      tomlGenerator = formats.toml { };
+      generator = formats.toml { };
       generatedThemes =
         if options ? themeDir then
           {
@@ -111,7 +111,7 @@ in
               name:
               {
                 name = "$out/helix/themes/${name}.toml";
-                value = tomlGenerator.generate "${name}.toml" options.themes.${name};
+                value = generator.generate "${name}.toml" options.themes.${name};
               }
             ) (attrNames options.themes)
           )
@@ -132,14 +132,14 @@ in
           if options ? settingsFile then
             options.settingsFile
           else if options ? settings then
-            tomlGenerator.generate "config.toml" options.settings
+            generator.generate "config.toml" options.settings
           else
             null;
         "$out/helix/languages.toml" =
           if options ? languagesFile then
             options.languagesFile
           else if options ? languages then
-            tomlGenerator.generate "languages.toml" options.languages
+            generator.generate "languages.toml" options.languages
           else
             null;
       }
