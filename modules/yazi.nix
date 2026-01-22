@@ -109,6 +109,10 @@ in {
 
         This defaults to the optionalDeps of the Yazi package in nixpkgs, set here:
         https://github.com/NixOS/nixpkgs/blob/master/pkgs/by-name/ya/yazi/package.nix#L8
+
+        The dependency `File` is added regardless of the content of this option, because it's non-optional.
+        See the Yazi docs on this topic:
+        https://yazi-rs.github.io/docs/installation
       '';
       defaultFunc =
         { inputs }:
@@ -155,11 +159,11 @@ in {
   impl =
     { inputs, options }:
     let
+      inherit (inputs.nixpkgs) pkgs;
       inherit (inputs.nixpkgs.lib) makeBinPath;
-      inherit (inputs.nixpkgs.pkgs) formats;
       inherit (builtins) listToAttrs attrNames;
       optionalAttrs = cond: attrs: if cond then attrs else {};
-      generator = formats.toml {};
+      generator = pkgs.formats.toml {};
     in
     assert !(options ? settings && options ? settingsFile);
     assert !(options ? keymap && options ? keymapFile);
@@ -217,7 +221,7 @@ in {
         )
       );
       wrapperArgs = ''
-        --prefix PATH : ${makeBinPath options.extraPackages}
+        --prefix PATH : ${makeBinPath (options.extraPackages ++ [ pkgs.file ])}
       '';
       environment = {
         YAZI_CONFIG_HOME = "$out/yazi";

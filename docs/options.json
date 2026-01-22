@@ -478,7 +478,7 @@
 
   "yazi": {
     "extraPackages": {
-      "description": "Packages to be automatically added as Yazi dependencies. This defaults to the optionalDeps of the Yazi package in nixpkgs, set here: https://github.com/NixOS/nixpkgs/blob/master/pkgs/by-name/ya/yazi/package.nix#L8",
+      "description": "Packages to be automatically added as Yazi dependencies. This defaults to the optionalDeps of the Yazi package in nixpkgs, set here: https://github.com/NixOS/nixpkgs/blob/master/pkgs/by-name/ya/yazi/package.nix#L8 The dependency `File` is added regardless of the content of this option, because it's non-optional. See the Yazi docs on this topic: https://yazi-rs.github.io/docs/installation",
       "type": "listOf<derivation>"
     },
     "flavors": {
