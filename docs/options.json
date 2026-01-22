@@ -527,6 +527,33 @@
     }
   },
 
+  "zellij": {
+    "configContents": {
+      "description": "Config to be injected into the wrapped package's `config.kdl`. See the documentation for valid options: https://zellij.dev/documentation/configuration.html Disjoint with the `configFile` option.",
+      "type": "string"
+    },
+    "configFile": {
+      "description": "`config.kdl` file to be injected into the wrapped package. See the documentation for valid options: https://zellij.dev/documentation/configuration.html Disjoint with the `configContents` option.",
+      "type": "pathLike"
+    },
+    "layoutsContents": {
+      "description": "Custom layouts to be injected into the wrapped package. See the documentation to learn how to make custom layouts and use them: https://zellij.dev/documentation/layouts.html Disjoint with the `layoutsFiles` option.",
+      "type": "attrsOf<string>"
+    },
+    "layoutsFiles": {
+      "description": "Files containing custom layouts to be injected into the wrapped package. See the documentation to learn how to make custom layouts and use them: https://zellij.dev/documentation/layouts.html Disjoint with the `layoutsContents` option.",
+      "type": "listOf<pathLike>"
+    },
+    "package": {
+      "description": "The zellij package to be wrapped.",
+      "type": "derivation"
+    },
+    "themes": {
+      "description": "Attribute set of themes to be injected into the wrapped package. See the zellij documentation to learn how to make custom themes and use them: https://zellij.dev/documentation/themes.html Each attribute name is used as the theme name. The corresponding value must be a folder or derivation whose top level contains a file named `<name>.kdl`. For example, an entry `themes.dracula = <drv>;` where `<drv>` contains `dracula.kdl` will result in `themes/dracula.kdl`.",
+      "type": "attrsOf<pathLike>"
+    }
+  },
+
   "zoxide": {
     "excludedDirs": {
       "description": "Directory globs that won't be added to the database when navigating with zoxide.",
