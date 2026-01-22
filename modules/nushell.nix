@@ -104,7 +104,7 @@ in {
           [];
       envFlag =
         if options ? environmentFile then
-          [ "--env-config ${options.enironmentFile} " ]
+          [ "--env-config ${options.enironmentFile}" ]
         else if options ? environment then
           [ "--env-config ${writeText "env.nu" (format options.environment)}" ]
         else
