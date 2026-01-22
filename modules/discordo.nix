@@ -1,4 +1,5 @@
-{adios}: let
+{ adios }:
+let
   inherit (adios) types;
 in {
   name = "discordo";

@@ -106,8 +106,10 @@ in {
           let
             destination = options.symlinks.${symlink};
           in
-          if destination == null then []
-          else [ "ln -s ${destination} ${symlink}" ]
+          if destination == null then
+            []
+          else
+            [ "ln -s ${destination} ${symlink}" ]
         ) (attrNames options.symlinks)
       );
       flagsStr = concatStringsSep " " (

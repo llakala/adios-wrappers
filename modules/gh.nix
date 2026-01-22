@@ -64,9 +64,12 @@ in {
       generator = inputs.nixpkgs.pkgs.formats.yaml {};
       mapBools = mapAttrs (
         _: value:
-        if value == true then "enabled"
-        else if value == false then "disabled"
-        else value
+        if value == true then
+          "enabled"
+        else if value == false then
+          "disabled"
+        else
+          value
       );
     in
     assert !(options ? configDir && (options ? settings || options ? hosts));
@@ -85,9 +88,15 @@ in {
         '';
         symlinks = {
           "$out/gh/config.yml" =
-            if options ? settings then generator.generate "config" (mapBools options.settings) else null;
+            if options ? settings then
+              generator.generate "config" (mapBools options.settings)
+            else
+              null;
           "$out/gh/hosts.yml" =
-            if options ? hosts then generator.generate "hosts" (mapBools options.hosts) else null;
+            if options ? hosts then
+              generator.generate "hosts" (mapBools options.hosts)
+            else
+              null;
         };
         environment = {
           GH_CONFIG_DIR = "$out/gh";

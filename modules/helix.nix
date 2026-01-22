@@ -1,8 +1,7 @@
 { adios }:
 let
   inherit (adios) types;
-in
-{
+in {
   name = "helix";
 
   inputs = {
@@ -99,7 +98,7 @@ in
       inherit (inputs.nixpkgs.pkgs) formats;
       inherit (builtins) listToAttrs attrNames;
       inherit (inputs.nixpkgs.lib) makeBinPath;
-      generator = formats.toml { };
+      generator = formats.toml {};
       generatedThemes =
         if options ? themeDir then
           {
@@ -107,16 +106,13 @@ in
           }
         else if options ? themes then
           listToAttrs (
-            map (
-              name:
-              {
-                name = "$out/helix/themes/${name}.toml";
-                value = generator.generate "${name}.toml" options.themes.${name};
-              }
-            ) (attrNames options.themes)
+            map (name: {
+              name = "$out/helix/themes/${name}.toml";
+              value = generator.generate "${name}.toml" options.themes.${name};
+            }) (attrNames options.themes)
           )
         else
-          { };
+          {};
     in
     assert !(options ? config && options ? configFile);
     assert !(options ? themes && options ? themeDir);

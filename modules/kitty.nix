@@ -77,10 +77,14 @@ in {
       generator = pkgs.formats.keyValue {
         listToValue = list: concatStringsSep " " (map toString list);
         mkKeyValue = lib.generators.mkKeyValueDefault {
-          mkValueString = value:
-            if value == true then "yes"
-            else if value == false then "no"
-            else lib.generators.mkValueStringDefault {} value;
+          mkValueString =
+            value:
+            if value == true then
+              "yes"
+            else if value == false then
+              "no"
+            else
+              lib.generators.mkValueStringDefault {} value;
         } " ";
       };
     in
@@ -93,12 +97,16 @@ in {
       '';
       symlinks = {
         "$out/kitty/kitty.conf" =
-          if options ? configFile then options.configFile
-          else if options ? settings then generator.generate "kitty" options.settings
-          else null;
+          if options ? configFile then
+            options.configFile
+          else if options ? settings then
+            generator.generate "kitty" options.settings
+          else
+            null;
 
         "$out/kitty/current-theme.conf" =
-          options.themeFile or "${inputs.nixpkgs.pkgs.kitty-themes}/share/kitty-themes/themes/${options.theme}.conf";
+          options.themeFile
+            or "${inputs.nixpkgs.pkgs.kitty-themes}/share/kitty-themes/themes/${options.theme}.conf";
       };
       environment = {
         KITTY_CONFIG_DIRECTORY = "$out/kitty";

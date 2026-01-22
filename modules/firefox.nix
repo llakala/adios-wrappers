@@ -57,7 +57,7 @@ in {
       description = ''
         The Firefox package to be wrapped.
         Note that this should use a `-unwrapped` variant.
-        '';
+      '';
       defaultFunc = { inputs }: inputs.nixpkgs.pkgs.firefox-unwrapped;
     };
   };

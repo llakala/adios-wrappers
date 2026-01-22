@@ -1,4 +1,4 @@
-{adios}:
+{ adios }:
 let
   inherit (adios) types;
 in {
@@ -36,7 +36,7 @@ in {
     package = {
       type = types.derivation;
       description = "The alacritty package to be wrapped.";
-      defaultFunc = {inputs}: inputs.nixpkgs.pkgs.alacritty;
+      defaultFunc = { inputs }: inputs.nixpkgs.pkgs.alacritty;
     };
   };
 
@@ -46,19 +46,19 @@ in {
       generator = inputs.nixpkgs.pkgs.formats.toml {};
     in
     assert !(options ? settings && options ? configFile);
-      inputs.mkWrapper {
-        inherit (options) package;
-        preWrap = ''
-          mkdir -p $out/alacritty
-        '';
-        symlinks = {
-          "$out/alacritty/alacritty.toml" =
-            if options ? configFile
-              then options.configFile
-            else if options ? settings
-              then generator.generate "alacritty.toml" options.settings
-            else null;
-        };
-        flags = ["--config-file" "$out/alacritty/alacritty.toml"];
+    inputs.mkWrapper {
+      inherit (options) package;
+      preWrap = ''
+        mkdir -p $out/alacritty
+      '';
+      symlinks = {
+        "$out/alacritty/alacritty.toml" =
+          if options ? configFile
+            then options.configFile
+          else if options ? settings
+            then generator.generate "alacritty.toml" options.settings
+          else null;
       };
+      flags = ["--config-file" "$out/alacritty/alacritty.toml"];
+    };
 }

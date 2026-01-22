@@ -85,6 +85,5 @@ in {
       ${lib.getExe finalWrapper} init fish | source
     '';
 
-
   impl = { options, inputs }: inputs.mkWrapper options.wrapperAttrs;
 }

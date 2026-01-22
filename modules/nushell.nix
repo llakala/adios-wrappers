@@ -1,8 +1,7 @@
 { adios }:
 let
   inherit (adios) types;
-in
-{
+in {
   name = "nushell";
 
   inputs = {
@@ -102,14 +101,14 @@ in
         else if options ? settings then
           [ "--config ${writeText "config.nu" options.settings}" ]
         else
-          [ ];
+          [];
       envFlag =
         if options ? environmentFile then
-          [ "--env-config ${options.enironmentFile} "]
+          [ "--env-config ${options.enironmentFile} " ]
         else if options ? environment then
           [ "--env-config ${writeText "env.nu" (format options.environment)}" ]
         else
-          [ ];
+          [];
     in
     assert !(options ? config && options ? configFile);
     assert !(options ? environment && options ? environmentFile);
