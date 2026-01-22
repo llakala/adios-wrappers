@@ -50,22 +50,26 @@ in {
       default = "";
     };
     environment = {
-      type = types.attrsOf (types.union [
-        types.null
-        types.pathLike
-        (types.struct "readFromFileAtRuntime" {
-          readFromFile = types.bool;
-          value = types.pathLike;
-        })
-      ]);
+      type = types.attrsOf (
+        types.union [
+          types.null
+          types.pathLike
+          (types.struct "readFromFileAtRuntime" {
+            readFromFile = types.bool;
+            value = types.pathLike;
+          })
+        ]
+      );
       description = "Environment variables to be set during the execution of the wrapped program";
       default = {};
     };
     symlinks = {
-      type = types.attrsOf (types.union [
-        types.null
-        types.pathLike
-      ]);
+      type = types.attrsOf (
+        types.union [
+          types.null
+          types.pathLike
+        ]
+      );
       description = ''
         Symlinks to be included in the resulting derivation.
         Each key specifies the location within the derivation to create the symlink.
@@ -112,9 +116,7 @@ in {
             [ "ln -s ${destination} ${symlink}" ]
         ) (attrNames options.symlinks)
       );
-      flagsStr = concatStringsSep " " (
-        map (flag: "--add-flag \"${flag}\"") options.flags
-      );
+      flagsStr = concatStringsSep " " (map (flag: "--add-flag \"${flag}\"") options.flags);
     in
     stdenvNoCC.mkDerivation {
       name = "${options.name}-wrapped";

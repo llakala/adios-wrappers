@@ -64,7 +64,9 @@ in {
         in
         # Allow mutators to change the default value, with the mutators taking
         # priority if the key is the same
-        recursiveUpdate default (mergeAttrsRecursively { inherit mutators; });
+        recursiveUpdate default (mergeAttrsRecursively {
+          inherit mutators;
+        });
     };
 
     package = {

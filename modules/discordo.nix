@@ -52,42 +52,41 @@ in {
 
     package = {
       type = types.derivation;
-      defaultFunc = {inputs}: inputs.nixpkgs.pkgs.discordo;
+      defaultFunc = { inputs }: inputs.nixpkgs.pkgs.discordo;
       description = "The discordo package to be wrapped.";
     };
   };
 
-  impl = {
-    options,
-    inputs,
-  }: let
-    generator = inputs.nixpkgs.pkgs.formats.toml {};
-  in
+  impl =
+    { options, inputs }:
+    let
+      generator = inputs.nixpkgs.pkgs.formats.toml {};
+    in
     assert !(options ? settings && options ? configFile);
-      inputs.mkWrapper {
-        inherit (options) package flags;
-        preWrap = ''
-          mkdir -p $out/discordo/
-        '';
-        environment = {
-          XDG_CONFIG_HOME = "$out";
-          DISCORDO_TOKEN =
-            if options ? tokenFile then
-              {
-                value = options.tokenFile;
-                readFromFile = true;
-              }
-            else
-              null;
-        };
-        symlinks = {
-          "$out/discordo/config.toml" =
-            if options ? configFile then
-              options.configFile
-            else if options ? settings then
-              generator.generate "config.toml" options.settings
-            else
-              null;
-        };
+    inputs.mkWrapper {
+      inherit (options) package flags;
+      preWrap = ''
+        mkdir -p $out/discordo/
+      '';
+      environment = {
+        XDG_CONFIG_HOME = "$out";
+        DISCORDO_TOKEN =
+          if options ? tokenFile then
+            {
+              value = options.tokenFile;
+              readFromFile = true;
+            }
+          else
+            null;
       };
+      symlinks = {
+        "$out/discordo/config.toml" =
+          if options ? configFile then
+            options.configFile
+          else if options ? settings then
+            generator.generate "config.toml" options.settings
+          else
+            null;
+      };
+    };
 }

@@ -60,6 +60,6 @@ in {
           else
             null;
       };
-      flags = ["--config-file" "$out/alacritty/alacritty.toml"];
+      flags = [ "--config-file $out/alacritty/alacritty.toml" ];
     };
 }

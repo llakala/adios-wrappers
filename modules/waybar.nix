@@ -106,9 +106,6 @@ in {
       inherit (options) package;
       flags = configFlag ++ styleFlag;
       environment.GTK_DEBUG =
-      if options ? interactiveEnv && options.interactiveEnv then
-        "interactive"
-      else
-        null;
+        if options ? interactiveEnv && options.interactiveEnv then "interactive" else null;
     };
 }

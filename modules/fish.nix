@@ -86,15 +86,19 @@ in {
             expansion = types.string;
           };
           # Just renamed for a nicer internal name
-          abbrType = types.rename "abbr" (types.union [
-            types.string
-            (abbrWithCursor.override { unknown = false; })
-          ]);
+          abbrType = types.rename "abbr" (
+            types.union [
+              types.string
+              (abbrWithCursor.override { unknown = false; })
+            ]
+          );
         in
-        types.attrsOf (types.union [
-          abbrType
-          (types.listOf (types.attrsOf abbrType))
-        ]);
+        types.attrsOf (
+          types.union [
+            abbrType
+            (types.listOf (types.attrsOf abbrType))
+          ]
+        );
       mergeFunc =
         { mutators, inputs }:
         let
@@ -148,7 +152,9 @@ in {
           inherit (builtins) attrValues concatStringsSep;
         in
         concatStringsSep "\n" (
-          [ "status is-interactive || exit 0" ]
+          [
+            "status is-interactive || exit 0"
+          ]
           ++ attrValues mutators
           ++ [ options.abbreviations ]
         );

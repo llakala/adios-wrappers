@@ -1,8 +1,7 @@
 { adios }:
 let
   inherit (adios) types;
-in
-{
+in {
   name = "bottom";
 
   inputs = {
@@ -44,7 +43,7 @@ in
   impl =
     { options, inputs }:
     let
-      generator = inputs.nixpkgs.pkgs.formats.toml { };
+      generator = inputs.nixpkgs.pkgs.formats.toml {};
     in
     assert !(options ? settings && options ? configFile);
     inputs.mkWrapper {
