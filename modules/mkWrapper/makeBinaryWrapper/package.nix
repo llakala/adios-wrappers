@@ -9,7 +9,7 @@
   writeShellScript,
   tests,
   cc ? targetPackages.stdenv.cc,
-  sanitizers ? [],
+  sanitizers ? []
 }:
 
 makeSetupHook {
