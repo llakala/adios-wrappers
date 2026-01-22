@@ -89,6 +89,8 @@ in {
       inherit (inputs.nixpkgs.pkgs) writeText;
       optionalAttrs = cond: attrs: if cond then attrs else {};
     in
+    assert !(options ? configContents && options ? configFile);
+    assert !(options ? layoutsContents && options ? layoutsFiles);
     inputs.mkWrapper {
       inherit (options) package;
       preWrap = ''
