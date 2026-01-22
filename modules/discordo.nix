@@ -42,6 +42,7 @@ in {
       '';
     };
 
+    # TODO: add impure variant when makeBinaryWrapper supports it
     flags = {
       type = types.listOf types.string;
       default = [];
