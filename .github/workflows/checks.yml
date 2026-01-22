@@ -1,4 +1,4 @@
-name: Check generated docs
+name: Check generated docs and formatting
 
 on:
   pull_request:
@@ -23,3 +23,13 @@ jobs:
 
       - name: Check that generated docs are the same
         run: diff temp.json docs/options.json
+  check-formatting:
+    steps:
+      - uses: cachix/install-nix-action@v30
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+
+      - uses: actions/checkout@v4.2.2
+
+      - name: Check that all modules are formatted properly
+        run: nix-shell --expr "with import <nixpkgs> {}; callPackage ./dev/nixfmt.nix {}" --run "nixfmt --check ./modules"
