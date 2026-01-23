@@ -41,32 +41,22 @@ in {
     };
 
     environment = {
-      type = types.attrs;
+      type = types.string;
       description = ''
-        Attrset of environment variables to be injected into the
-        wrapped packages `config.nu`.
+        Environment config to be injected into the wrapped package's `env.nu`.
 
         See the nushell documentation for valid options:
         https://www.nushell.sh/book/configuration.html
 
-        Example:
-        ```
-        {
-          HELLO = "test";
-          FOO = "3";
-        }
-        ```
-
-        Maps to:
-        ```
-        $env.HELLO = "test"
-        $env.FOO = "3"
-        ```
-
         Disjoint with the `environmentFile` option.
       '';
-      mutatorType = types.attrs;
-      mergeFunc = adios.lib.mergeFuncs.mergeAttrsRecursively;
+      mutatorType = types.string;
+      mergeFunc =
+        { mutators, options }:
+        let
+          inherit (builtins) attrValues concatStringsSep;
+        in
+        concatStringsSep "\n" (attrValues mutators);
     };
     environmentFile = {
       type = types.pathLike;
@@ -90,10 +80,7 @@ in {
   impl =
     { options, inputs }:
     let
-      inherit (builtins) concatStringsSep attrNames;
       inherit (inputs.nixpkgs.pkgs) writeText;
-      format =
-        attrs: concatStringsSep "\n" (map (name: "$env.${name} = \"${attrs.${name}}\"") (attrNames attrs));
 
       configFlag =
         if options ? configFile then
@@ -104,13 +91,13 @@ in {
           [];
       envFlag =
         if options ? environmentFile then
-          [ "--env-config ${options.enironmentFile}" ]
+          [ "--env-config ${options.environmentFile} "]
         else if options ? environment then
-          [ "--env-config ${writeText "env.nu" (format options.environment)}" ]
+          [ "--env-config ${writeText "env.nu" options.environment}" ]
         else
           [];
     in
-    assert !(options ? config && options ? configFile);
+    assert !(options ? settings && options ? configFile);
     assert !(options ? environment && options ? environmentFile);
     inputs.mkWrapper {
       package = options.package;

@@ -364,9 +364,9 @@
       "type": "pathLike"
     },
     "environment": {
-      "description": "Attrset of environment variables to be injected into the wrapped packages `config.nu`. See the nushell documentation for valid options: https://www.nushell.sh/book/configuration.html Example: ``` {   HELLO = \"test\";   FOO = \"3\"; } ``` Maps to: ``` $env.HELLO = \"test\" $env.FOO = \"3\" ``` Disjoint with the `environmentFile` option.",
-      "mutatorType": "attrs",
-      "type": "attrs"
+      "description": "Environment config to be injected into the wrapped package's `env.nu`. See the nushell documentation for valid options: https://www.nushell.sh/book/configuration.html Disjoint with the `environmentFile` option.",
+      "mutatorType": "string",
+      "type": "string"
     },
     "environmentFile": {
       "description": "`env.nu` file to be injected into the wrapped package. See the nushell documentaion on file sytax: https://www.nushell.sh/book/configuration.html Disjoint with the `environment` option.",
