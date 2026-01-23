@@ -58,7 +58,7 @@ in {
     languages = {
       type = types.attrs;
       description = ''
-        Languages to be injected into the wrapped package's `languages.toml`.
+        Language config to be injected into the wrapped package's `languages.toml`.
 
         See the documentation for valid options:
         https://docs.helix-editor.com/languages.html
@@ -114,9 +114,9 @@ in {
         else
           {};
     in
-    assert !(options ? config && options ? configFile);
+    assert !(options ? settings && options ? configFile);
     assert !(options ? themes && options ? themeDir);
-    assert !(options ? languages && options ? languageDir);
+    assert !(options ? languages && options ? languagesFile);
     inputs.mkWrapper {
       inherit (options) package;
       binaryPath = "$out/bin/hx";

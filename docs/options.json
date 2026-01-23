@@ -216,7 +216,7 @@
       "type": "listOf<derivation>"
     },
     "languages": {
-      "description": "Languages to be injected into the wrapped package's `languages.toml`. See the documentation for valid options: https://docs.helix-editor.com/languages.html Disjoint with the `languagesFile` option.",
+      "description": "Language config to be injected into the wrapped package's `languages.toml`. See the documentation for valid options: https://docs.helix-editor.com/languages.html Disjoint with the `languagesFile` option.",
       "type": "attrs"
     },
     "languagesFile": {
