@@ -215,13 +215,13 @@
       "description": "Packages to be automatically added to helix's path. Mainly used to set language servers and formatters.",
       "type": "listOf<derivation>"
     },
-    "languages": {
-      "description": "Languages to be injected into the wrapped package's `languages.toml`. See the documentation for valid options: https://docs.helix-editor.com/languages.html Disjoint with the `languagesFile` option.",
-      "type": "attrs"
-    },
-    "languagesFile": {
+    "languageFile": {
       "description": "`languages.toml` file to be injected into the wrapped package. See the documentation on valid options: https://docs.helix-editor.com/languages.html Disjoint with the `languages` option.",
       "type": "pathLike"
+    },
+    "languages": {
+      "description": "Languages to be injected into the wrapped package's `languages.toml`. See the documentation for valid options: https://docs.helix-editor.com/languages.html Disjoint with the `languageFile` option.",
+      "type": "attrs"
     },
     "package": {
       "description": "The helix package to be wrapped.",

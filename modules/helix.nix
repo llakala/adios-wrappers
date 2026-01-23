@@ -1,7 +1,8 @@
 { adios }:
 let
   inherit (adios) types;
-in {
+in
+{
   name = "helix";
 
   inputs = {
@@ -63,10 +64,10 @@ in {
         See the documentation for valid options:
         https://docs.helix-editor.com/languages.html
 
-        Disjoint with the `languagesFile` option.
+        Disjoint with the `languageFile` option.
       '';
     };
-    languagesFile = {
+    languageFile = {
       type = types.pathLike;
       description = ''
         `languages.toml` file to be injected into the wrapped package.
@@ -107,16 +108,16 @@ in {
         else if options ? themes then
           listToAttrs (
             map (name: {
-              name = "$out/helix/themes/${name}.toml";
-              value = generator.generate "${name}.toml" options.themes.${name};
+                name = "$out/helix/themes/${name}.toml";
+                value = generator.generate "${name}.toml" options.themes.${name};
             }) (attrNames options.themes)
           )
         else
           {};
     in
-    assert !(options ? config && options ? configFile);
+    assert !(options ? settings && options ? configFile);
     assert !(options ? themes && options ? themeDir);
-    assert !(options ? languages && options ? languageDir);
+    assert !(options ? languages && options ? languageFile);
     inputs.mkWrapper {
       inherit (options) package;
       binaryPath = "$out/bin/hx";
@@ -132,8 +133,8 @@ in {
           else
             null;
         "$out/helix/languages.toml" =
-          if options ? languagesFile then
-            options.languagesFile
+          if options ? languageFile then
+            options.languageFile
           else if options ? languages then
             generator.generate "languages.toml" options.languages
           else
