@@ -80,7 +80,7 @@ in {
     inputs.mkWrapper {
       name = "git"; # Default derivation name is git-with-svn
       inherit (options) package;
-      preWrap = ''
+      preSymlink = ''
         mkdir -p $out/git
       '';
       symlinks = {

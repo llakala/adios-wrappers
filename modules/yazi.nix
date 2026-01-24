@@ -170,7 +170,7 @@ in {
     assert !(options ? initLua && options ? initLuaFile);
     inputs.mkWrapper {
       inherit (options) package;
-      preWrap = ''
+      preSymlink = ''
         mkdir -p $out/yazi/plugins
         mkdir -p $out/yazi/flavors
       '';

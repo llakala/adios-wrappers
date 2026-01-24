@@ -45,7 +45,7 @@ in {
     inputs.mkWrapper {
       inherit (options) package;
       binaryPath = "$out/libexec/xdg-desktop-portal-termfilechooser";
-      preWrap = ''
+      preSymlink = ''
         mkdir -p $out/xdg-desktop-portal-termfilechooser
       '';
       symlinks = {

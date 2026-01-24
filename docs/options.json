@@ -332,6 +332,12 @@
       "description": "Commands to be run after the wrapping process in the build steps.",
       "type": "union<null,string>"
     },
+    "preSymlink": {
+      "default": null,
+      "description": "Commands to be run before the symlinking process in the build steps. Commonly used to create a directory in which the symlinks will be placed.",
+      "example": "mkdir -p $out/foo-config",
+      "type": "union<null,string>"
+    },
     "preWrap": {
       "default": null,
       "description": "Commands to be run before the wrapping process in the build steps.",

@@ -55,7 +55,7 @@ in {
     assert !(options ? themeConfig && options ? themeFile);
     inputs.mkWrapper {
       inherit (options) package flags;
-      preWrap = ''
+      preSymlink = ''
         mkdir -p $out/eza-config
       '';
       symlinks = {

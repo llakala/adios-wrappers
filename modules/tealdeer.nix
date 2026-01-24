@@ -49,7 +49,7 @@ in {
     inputs.mkWrapper {
       inherit (options) package;
       binaryPath = "$out/bin/tldr";
-      preWrap = ''
+      preSymlink = ''
         mkdir -p $out/tealdeer-config
       '';
       symlinks = {

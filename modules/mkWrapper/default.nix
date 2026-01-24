@@ -40,6 +40,16 @@ in {
       defaultFunc = { options }: "$out/bin/${options.name}";
     };
 
+    preSymlink = {
+      type = nullOr types.string;
+      description = ''
+        Commands to be run before the symlinking process in the build steps. Commonly used to create a directory in which the symlinks will be placed.
+      '';
+      default = null;
+      example = ''
+        mkdir -p $out/foo-config
+      '';
+    };
     preWrap = {
       type = nullOr types.string;
       description = "Commands to be run before the wrapping process in the build steps.";
@@ -140,8 +150,9 @@ in {
         for i in $(cat $pathsPath); do
           ${lndir}/bin/lndir -silent $i $out
         done
-        ${optionalString options.preWrap}
+        ${optionalString options.preSymlink}
         ${symlinkedStr}
+        ${optionalString options.preWrap}
         ${
           if environmentStr == "" && options.wrapperArgs == "" && options.flags == [] then
             ""

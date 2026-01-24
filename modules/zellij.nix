@@ -93,7 +93,7 @@ in {
     assert !(options ? layoutsContents && options ? layoutsFiles);
     inputs.mkWrapper {
       inherit (options) package;
-      preWrap = ''
+      preSymlink = ''
         mkdir -p $out/zellij-config/themes
         mkdir -p $out/zellij-config/layouts
       '';

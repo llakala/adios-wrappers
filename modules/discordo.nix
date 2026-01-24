@@ -66,7 +66,7 @@ in {
     assert !(options ? settings && options ? configFile);
     inputs.mkWrapper {
       inherit (options) package flags;
-      preWrap = ''
+      preSymlink = ''
         mkdir -p $out/discordo/
       '';
       environment = {

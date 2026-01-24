@@ -93,7 +93,7 @@ in {
     assert !(options ? theme && options ? themeFile);
     inputs.mkWrapper {
       inherit (options) package;
-      preWrap = ''
+      preSymlink = ''
         mkdir -p $out/kitty
       '';
       symlinks = {

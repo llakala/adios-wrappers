@@ -83,7 +83,7 @@ in {
     else
       inputs.mkWrapper {
         inherit (options) package;
-        preWrap = ''
+        preSymlink = ''
           mkdir -p $out/gh
         '';
         symlinks = {

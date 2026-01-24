@@ -60,7 +60,7 @@ in {
     inputs.mkWrapper {
       inherit (options) package;
       binaryPath = "$out/bin/jj";
-      preWrap = ''
+      preSymlink = ''
         mkdir -p $out/jj-config
       '';
       symlinks = {

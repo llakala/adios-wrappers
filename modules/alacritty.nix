@@ -48,7 +48,7 @@ in {
     assert !(options ? settings && options ? configFile);
     inputs.mkWrapper {
       inherit (options) package;
-      preWrap = ''
+      preSymlink = ''
         mkdir -p $out/alacritty
       '';
       symlinks = {

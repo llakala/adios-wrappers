@@ -49,7 +49,7 @@ in {
     inputs.mkWrapper {
       inherit (options) package;
       binaryPath = "$out/bin/btm";
-      preWrap = ''
+      preSymlink = ''
         mkdir -p $out/bottom
       '';
       symlinks = {

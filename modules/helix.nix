@@ -120,7 +120,7 @@ in {
     inputs.mkWrapper {
       inherit (options) package;
       binaryPath = "$out/bin/hx";
-      preWrap = ''
+      preSymlink = ''
         mkdir -p $out/helix/themes
       '';
       symlinks = {
