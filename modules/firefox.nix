@@ -71,14 +71,18 @@ in {
     in
     assert !(options ? policies && options ? policiesFiles);
     wrapFirefox options.package (filterNullAttrs {
-      extraPrefsFiles = options.autoConfigFiles or null;
       extraPolicies = options.policies or null;
-      # From my testing, these need to be coerced to store paths.
+      # From my testing, these options need to be coerced to store paths.
       # If you know of a workaround to allow impure paths to be used here,
       # please make a PR!
       extraPoliciesFiles =
         if options ? policiesFiles then
           map (file: "${file}") options.policiesFiles
+        else
+          null;
+      extraPrefsFiles =
+        if options ? autoConfigFiles then
+          map (file: "${file}") options.autoConfigFiles
         else
           null;
     });
