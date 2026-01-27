@@ -128,7 +128,7 @@ in {
             [ "ln -s ${destination} ${symlink}" ]
         ) (attrNames options.symlinks)
       );
-      flagsStr = concatStringsSep " " (map (flag: "--add-flag \"${flag}\"") options.flags);
+      flagsStr = concatStringsSep " " (map (flag: "--add-flag '${flag}'") options.flags);
     in
     stdenvNoCC.mkDerivation {
       name = "${options.name}-wrapped";
