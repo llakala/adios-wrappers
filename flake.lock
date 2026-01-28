@@ -2,11 +2,11 @@
   "nodes": {
     "adios": {
       "locked": {
-        "lastModified": 1769454277,
-        "narHash": "sha256-Qkht1VcmVosPbvNWtgRFTGJTK+ES9h3ukctkKxevKuo=",
+        "lastModified": 1769580330,
+        "narHash": "sha256-rKcmnyW1Wd3MLpVg8+afu2m8SL+CnCiqNNYmZHgqsXo=",
         "owner": "llakala",
         "repo": "adios",
-        "rev": "bd2a40646a6dc8c6a5a1252911b81d700cababf3",
+        "rev": "afc20fccb37766259908482bfd59139b2ad6828e",
         "type": "github"
       },
       "original": {

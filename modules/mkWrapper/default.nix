@@ -1,6 +1,5 @@
-{ adios }:
+{ types, ... }:
 let
-  inherit (adios) types;
   nullOr =
     other:
     types.union [

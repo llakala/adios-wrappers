@@ -1,8 +1,6 @@
 # TODO integration with zoxide, plugins, etc
-{ adios }:
-let
-  inherit (adios) types;
-in {
+{ types, ... } @ adios:
+{
   name = "zsh";
 
   inputs = {

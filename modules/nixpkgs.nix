@@ -1,13 +1,13 @@
-{ adios }:
+{ types, ... }:
 {
   name = "nixpkgs";
 
   options = {
     pkgs = {
-      type = adios.types.attrs;
+      type = types.attrs;
     };
     lib = {
-      type = adios.types.attrs;
+      type = types.attrs;
       defaultFunc = { options }: options.pkgs.lib;
     };
   };
