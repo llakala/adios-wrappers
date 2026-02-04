@@ -635,18 +635,30 @@
   },
 
   "zsh": {
+    "aliases": {
+      "description": "Aliases to be defined in the wrapped package's `.zshrc` file. Aliases can either be a string defining the command to be aliased, or a struct where you can define the command and if the alias should be global. See the documentation for valid options: https://zsh.sourceforge.io/Intro/intro_8.html",
+      "example": {
+        "G": {
+          "command": "| grep",
+          "global": true
+        },
+        "ls": "ls --color"
+      },
+      "mutatorType": "attrsOf<union<string,global alias>>",
+      "type": "attrsOf<union<string,global alias>>"
+    },
     "extraPackages": {
       "description": "Runtime dependencies to be injected into the wrapped package's path.",
-      "mutatorType": "listOf<pathLike>",
+      "mutatorType": "listOf<derivation>",
       "type": "listOf<derivation>"
     },
     "extraZshrc": {
-      "description": "zsh script to be injected at the end of the wrapped package's `.zshrc`. Disjoint with the `zshrcFiles` option.",
-      "mutatorType": "string",
+      "description": "zsh script to be injected after the `zshrcFiles` option in the wrapped package's `.zshrc`.",
+      "example": "# zoxide must be added at the end of the .zshrc so we use extraZshrc. # https://github.com/ajeetdsouza/zoxide?tab=readme-ov-file#installation eval \"$(zoxide init zsh)\"",
       "type": "string"
     },
     "extraZshrcFiles": {
-      "description": "zsh files to be sourced at the end of the wrapped package's `.zshrc` file. Disjoint with the `zshrc` option.:",
+      "description": "zsh files to be sourced at the end of the wrapped package's `.zshrc` file.",
       "mutatorType": "listOf<pathLike>",
       "type": "listOf<pathLike>"
     },
@@ -654,13 +666,39 @@
       "description": "The zsh package to be wrapped.",
       "type": "derivation"
     },
+    "plugins": {
+      "description": "Plugins to be appended to the wrapped package's `.zshrc`. If a value is a derivation, it will be sourced as `<derivation>/share/<derivation.pname>/<derivation.pname>.zsh` which should be compatible with the majority of plugins. If this path is incorrect then the value may be defined as an attrSet containing the attrs `package` and `path` and will be sourced as `<package>/<path>`.",
+      "example": "[   pkgs.zsh-autosuggestions   {     package = pkgs.nix-zsh-completions;     path = \"share/zsh/plugins/nix/nix-zsh-completions.plugin.zsh\";   } ];",
+      "mutatorType": "listOf<union<derivation,plugin>>",
+      "type": "listOf<union<derivation,plugin>>"
+    },
+    "settings": {
+      "description": "Options to be enabled or disabled in the wrapped package's `.zshrc` file. See the documentation for valid options: https://zsh.sourceforge.io/Doc/Release/Options.html",
+      "example": {
+        "appendhistory": true,
+        "autocd": false,
+        "beep": false,
+        "sharehistory": true
+      },
+      "mutatorType": "attrsOf<bool>",
+      "type": "attrsOf<bool>"
+    },
+    "variables": {
+      "description": "Environment variables to be defined in the wrapped package's `.zshrc` file.",
+      "example": {
+        "HISTFILE": "~/.histfile",
+        "HISTSIZE": 5000
+      },
+      "mutatorType": "attrs",
+      "type": "attrs"
+    },
     "zshrc": {
-      "description": "zsh script to be injected into the wrapped package's `.zshrc`. Disjoint with the `zshrcFiles` option.",
-      "mutatorType": "string",
+      "description": "zsh script to be injected into the wrapped package's `.zshrc`.",
+      "example": "# Enable vim mode bindkey -v # Enable completions. A custom zcompdump location must be used as the # default location will be $ZDOTDIR which is immutable. autoload -Uz compinit compinit -d ~/.cache/zsh/.zcompdump -C",
       "type": "string"
     },
     "zshrcFiles": {
-      "description": "zsh files to be sourced in the wrapped package's `.zshrc` file. Disjoint with the `zshrc` option.",
+      "description": "zsh files to be sourced after the `zshrc` option in the wrapped package's `.zshrc` file.",
       "mutatorType": "listOf<pathLike>",
       "type": "listOf<pathLike>"
     }
