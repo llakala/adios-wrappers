@@ -60,6 +60,17 @@ in {
       default = null;
     };
 
+    useBinaryWrapper = {
+      type = types.bool;
+      default = true;
+      description = ''
+        Whether to compile the final executable via a templated C program.
+
+        If set to false, the final executable will instead be a normal bash script that's interpreted at runtime.
+
+        This shouldn't be disabled unless you have a specific issue with makeBinaryWrapper.
+      '';
+    };
     wrapperArgs = {
       type = nullOr types.string;
       description = "Extra args passed directly to wrapProgram.";
@@ -98,7 +109,7 @@ in {
   impl =
     { options, inputs }:
     let
-      inherit (inputs.nixpkgs.pkgs) stdenvNoCC callPackage lndir;
+      inherit (inputs.nixpkgs.pkgs) stdenvNoCC callPackage lndir makeShellWrapper;
       inherit (builtins) attrNames concatMap concatStringsSep isAttrs;
       makeBinaryWrapper = callPackage ./makeBinaryWrapper/package.nix {};
       environmentStr = concatStringsSep " " (
@@ -110,7 +121,16 @@ in {
           if value == null then
             []
           else if isAttrs value && value ? readFromFile && value.readFromFile == true then
-            [ "--set-from-file ${var} \"${value.value}\"" ]
+            if options.useBinaryWrapper then
+              [ "--set-from-file ${var} \"${value.value}\"" ]
+            else
+              throw ''
+                ${options.name} wrapper set an env var to read from a file at runtime, but had
+                'useBinaryWrapper' set to false.
+                For right now, only makeBinaryWrapper supports reading from files at runtime.
+                Let me know if you really need this supported - which I would doubt, since most
+                people should be using makeBinaryWrapper.
+              ''
           else
             [ "--set ${var} \"${value}\"" ]
         ) (attrNames options.environment)
@@ -127,11 +147,19 @@ in {
             [ "ln -s ${destination} ${symlink}" ]
         ) (attrNames options.symlinks)
       );
-      flagsStr = concatStringsSep " " (map (flag: "--add-flag \"${flag}\"") options.flags);
+      flagsStr =
+        if options.useBinaryWrapper then
+          concatStringsSep " " (map (flag: "--add-flag \"${flag}\"") options.flags)
+        else
+          "--add-flags \"${concatStringsSep " " options.flags}\"";
     in
     stdenvNoCC.mkDerivation {
       name = "${options.name}-wrapped";
-      buildInputs = [ makeBinaryWrapper ];
+      buildInputs =
+        if options.useBinaryWrapper then
+          [ makeBinaryWrapper ]
+        else
+          [ makeShellWrapper ];
       paths = map (path: "${path}") ([ options.package ] ++ options.extraPaths);
       meta.mainProgram = options.name;
       passthru = options.package.passthru or {};

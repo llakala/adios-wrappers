@@ -371,6 +371,11 @@
       "description": "Symlinks to be included in the resulting derivation. Each key specifies the location within the derivation to create the symlink. Each value specifies where the symlink should be directed to.",
       "type": "attrsOf<union<null,pathLike>>"
     },
+    "useBinaryWrapper": {
+      "default": true,
+      "description": "Whether to compile the final executable via a templated C program. If set to false, the final executable will instead be a normal bash script that's interpreted at runtime. This shouldn't be disabled unless you have a specific issue with makeBinaryWrapper.",
+      "type": "bool"
+    },
     "wrapperArgs": {
       "default": null,
       "description": "Extra args passed directly to wrapProgram.",
