@@ -176,8 +176,9 @@
       inherit (inputs.nixpkgs.lib) makeBinPath;
       inherit (builtins) concatStringsSep attrNames;
       optionalString = cond: string: if cond then string else "";
-      # Concatenates a list of strings so they're formatted properly for the .zshrc
-      concat = elems: (concatStringsSep "\n" elems) + "\n\n";
+      # Apply some function to each element in the list, then concat all the
+      # elements together with newlines in between
+      mapAndConcat = func: elems: (concatStringsSep "\n" (map func elems)) + "\n";
       # Whether a .zshrc should be generated
       shouldConfigure =
         options ? zshrc
@@ -186,24 +187,26 @@
         || options ? settings
         || options ? aliases
         || options ? variables;
-      # Generates zsh sourcing all the files in a list
-      sourceFiles = files: concat (map (file: "source ${file}") files);
       zshrc =
         let
-          zshrcFiles = optionalString (options ? zshrcFiles) (sourceFiles "${options.zshrcFiles}\n");
-          extraZshrcFiles = optionalString (options ? extraZshrcFiles) "${options.extraZshrcFiles}\n";
+          zshrcFiles = optionalString (options ? zshrcFiles) (
+            mapAndConcat (file: "source ${file}") options.zshrcFiles
+          );
+          extraZshrcFiles = optionalString (options ? extraZshrcFiles) (
+            mapAndConcat (file: "source ${file}") options.extraZshrcFiles
+          );
           zshrcText = optionalString (options ? zshrc) "${options.zshrc}\n";
           extraZshrcText = optionalString (options ? extraZshrc) "${options.extraZshrc}\n";
-          settings = optionalString (options ? settings) concat (
-            map (name: "${optionalString (!options.settings.${name}) "un"}setopt ${name}") (
+          settings = optionalString (options ? settings) (
+            mapAndConcat (name: if options.settings.${name} then "setopt ${name}" else "unsetopt ${name}") (
               attrNames options.settings
             )
           );
-          variables = optionalString (options ? variables) concat (
-            map (name: "${name}=${toString options.variables.${name}}") (attrNames options.variables)
+          variables = optionalString (options ? variables) (
+            mapAndConcat (name: "${name}=${toString options.variables.${name}}") (attrNames options.variables)
           );
-          aliases = optionalString (options ? aliases) concat (
-            map (
+          aliases = optionalString (options ? aliases) (
+            mapAndConcat (
               name:
               let
                 value = options.aliases.${name};
@@ -214,13 +217,13 @@
                 "alias ${name}='${value.command or value}'"
             ) (attrNames options.aliases)
           );
-          plugins = optionalString (options ? plugins) sourceFiles (
-            map (
+          plugins = optionalString (options ? plugins) (
+            mapAndConcat (
               plugin:
               if plugin ? path then
-                "${plugin.package}/${plugin.path}"
+                "source ${plugin.package}/${plugin.path}"
               else
-                "${plugin}/share/${plugin.pname}/${plugin.pname}.zsh"
+                "source ${plugin}/share/${plugin.pname}/${plugin.pname}.zsh"
             ) options.plugins
           );
         in
