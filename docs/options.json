@@ -51,6 +51,29 @@
     }
   },
 
+  "direnv": {
+    "configFile": {
+      "description": "`direnv.toml` file to be injected into the wrapped package. See the direnv documentation for valid options: {manpage}`direnv.toml(1)`. Disjoint with the `settings` option.",
+      "type": "pathLike"
+    },
+    "direnvrc": {
+      "description": "Custom direnvrc definition to be injected into the wrapped packages `direnvrc` The syntax is described at: https://direnv.net/#the-stdlib",
+      "type": "string"
+    },
+    "direnvrcFile": {
+      "description": "`direnvrc` file to be copied into the wrapped package. The syntax is described at: https://direnv.net/#the-stdlib",
+      "type": "string"
+    },
+    "package": {
+      "description": "The direnv package to be wrapped.",
+      "type": "derivation"
+    },
+    "settings": {
+      "description": "Settings to be injected into the wrapped package's `direnv.toml`. See the direnv docs for valid options: {manpage}`direnv.toml(1)`. Disjoint with the `configFile` option.",
+      "type": "attrs"
+    }
+  },
+
   "discordo": {
     "configFile": {
       "description": "`config.toml` file to be injected into the wrapped package. See the default configuration for valid options: https://github.com/ayn2op/discordo/blob/main/internal/config/config.toml Disjoint with the `settings` option.",
