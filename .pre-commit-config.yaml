@@ -1,0 +1,19 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.2.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+  - repo: local
+    hooks:
+      - id: nixfmt-nix
+        name: Run Nixfmt
+        entry: nixfmt
+        language: system
+        types: [nix]
+      - id: generate-documentation
+        name: Generate documentation
+        entry: dev/generate-docs.sh
+        language: system

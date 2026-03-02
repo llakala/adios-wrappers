@@ -9,6 +9,12 @@ in {
     packages = [
       nixfmt
       pkgs.npins
+      pkgs.jq
+      pkgs.pre-commit
     ];
+
+    shellHook = ''
+      pre-commit install
+    '';
   };
 }

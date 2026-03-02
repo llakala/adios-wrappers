@@ -15,13 +15,25 @@ let
   mkFunctor =
     fn:
     let
-      e = builtins.tryEval (fn { });
+      e = builtins.tryEval (fn {});
     in
-    (if e.success then e.value else { error = fn { }; }) // { __functor = _self: fn; };
+    (
+      if e.success then
+        e.value
+      else
+        { error = fn {}; }
+    )
+    // {
+      __functor = _self: fn;
+    };
 
   # https://github.com/NixOS/nixpkgs/blob/0258808f5744ca980b9a1f24fe0b1e6f0fecee9c/lib/lists.nix#L295
   range =
-    first: last: if first > last then [ ] else builtins.genList (n: first + n) (last - first + 1);
+    first: last:
+    if first > last then
+      []
+    else
+      builtins.genList (n: first + n) (last - first + 1);
 
   # https://github.com/NixOS/nixpkgs/blob/0258808f5744ca980b9a1f24fe0b1e6f0fecee9c/lib/strings.nix#L257
   stringToCharacters = s: map (p: builtins.substring p 1 s) (range 0 (builtins.stringLength s - 1));
@@ -55,7 +67,7 @@ let
   mkSource =
     name: spec:
     {
-      pkgs ? null,
+      pkgs ? null
     }:
     assert spec ? type;
     let
@@ -71,10 +83,7 @@ let
         else
           {
             fetchTarball =
-              {
-                url,
-                sha256,
-              }:
+              { url, sha256 }:
               pkgs.fetchzip {
                 inherit url sha256;
                 extension = "tar";
@@ -86,7 +95,7 @@ let
                 submodules,
                 rev,
                 name,
-                narHash,
+                narHash
               }:
               pkgs.fetchgit {
                 inherit url rev name;
@@ -115,11 +124,7 @@ let
     spec // { outPath = mayOverride name path; };
 
   mkGitSource =
-    {
-      fetchTarball,
-      fetchGit,
-      ...
-    }:
+    { fetchTarball, fetchGit, ... }:
     {
       repository,
       revision,
@@ -170,11 +175,7 @@ let
 
   mkPyPiSource =
     { fetchurl, ... }:
-    {
-      url,
-      hash,
-      ...
-    }:
+    { url, hash, ... }:
     fetchurl {
       inherit url;
       sha256 = hash;
@@ -182,11 +183,7 @@ let
 
   mkChannelSource =
     { fetchTarball, ... }:
-    {
-      url,
-      hash,
-      ...
-    }:
+    { url, hash, ... }:
     fetchTarball {
       inherit url;
       sha256 = hash;
@@ -224,7 +221,7 @@ let
 in
 mkFunctor (
   {
-    input ? ./sources.json,
+    input ? ./sources.json
   }:
   let
     data =
