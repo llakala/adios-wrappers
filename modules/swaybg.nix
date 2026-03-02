@@ -49,7 +49,7 @@
     inputs.mkWrapper {
       inherit (options) package;
       symlinks = {
-        # Unecessary as `backgroundImage` can be passed directly to `-i` but this assists with debugging.
+        # Unnecessary as `backgroundImage` can be passed directly to `-i` but this assists with debugging.
         "$out/backgroundImage" = if options ? backgroundImage then options.backgroundImage else null;
       };
       flags =

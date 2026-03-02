@@ -153,7 +153,7 @@
       "type": "listOf<pathLike>"
     },
     "interactiveShellInit": {
-      "description": "Shell initialization code to be automatically injected into the wrapped package. Only ran when Fish is initalized interactively.",
+      "description": "Shell initialization code to be automatically injected into the wrapped package. Only ran when Fish is initialized interactively.",
       "mutatorType": "string",
       "type": "string"
     },

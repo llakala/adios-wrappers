@@ -84,7 +84,7 @@ lib.recursiveUpdate [
 As you can see, the right attrset "updates" the left attrset, with the right attrset taking priority if there's a key collision. This
 means we can take the existing modules and:
 
-- Inject our personal configuration wth `options.$OPTION_NAME.default`
+- Inject our personal configuration with `options.$OPTION_NAME.default`
 - Use computed defaults with `options.$OPTION_NAME.defaultFunc`
 - Specify mutators for an option with `options.$OPTION_NAME.mutators`
 - Add inputs to a module with `inputs.foo.path = "/foo";`

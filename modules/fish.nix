@@ -141,7 +141,7 @@
       description = ''
         Shell initialization code to be automatically injected into the wrapped package.
 
-        Only ran when Fish is initalized interactively.
+        Only ran when Fish is initialized interactively.
       '';
       mutatorType = types.string;
       mergeFunc =

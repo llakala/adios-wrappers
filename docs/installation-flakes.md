@@ -76,4 +76,4 @@ outputs = inputs: {
 };
 ```
 
-Now that you've installed adios-wrappers, feel fre to move onto the [usage instructions](./usage.md).
+Now that you've installed adios-wrappers, feel free to move onto the [usage instructions](./usage.md).
