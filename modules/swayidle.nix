@@ -44,7 +44,7 @@
     let
       inherit (inputs.nixpkgs.pkgs) writeText;
       configFlag =
-        if options ? configContent || options ? configFile then
+        if options ? configContents || options ? configFile then
           [
             "-C"
             "$out/config"
