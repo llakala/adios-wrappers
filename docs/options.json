@@ -345,6 +345,29 @@
     }
   },
 
+  "mangowc": {
+    "autostartContents": {
+      "description": "Script that get runs on startup, injected into the wrapped packages `autostart.sh` See the mangowc docs for valid options: https://mangowm.github.io/docs/configuration/basics#autostart Disjoint with the `autostartFile` option.",
+      "type": "string"
+    },
+    "autostartFile": {
+      "description": "`autostart.sh` file to be injected into the wrapped package. See the mangowc docs for valid options: https://mangowm.github.io/docs/configuration/basics#autostart Disjoint with the `autostartContents` option.",
+      "type": "pathLike"
+    },
+    "configFile": {
+      "description": "`config.conf` file to be injected into the wrapped package. See the mangowc docs for valid options: https://mangowm.github.io/docs/configuration/basics Disjoint with the `settings` option.",
+      "type": "pathLike"
+    },
+    "package": {
+      "description": "The mangowc package to be wrapped.",
+      "type": "derivation"
+    },
+    "settings": {
+      "description": "Settings to be injected into the wrapped package's `config.conf`. See the mangowc docs for valid options: https://mangowm.github.io/docs/configuration/basics Disjoint with the `configFile` option.",
+      "type": "attrs"
+    }
+  },
+
   "mkWrapper": {
     "binaryPath": {
       "description": "Path within the input derivation to the binary which should be wrapped",
