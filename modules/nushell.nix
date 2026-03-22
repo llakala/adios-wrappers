@@ -40,20 +40,35 @@
 
   impl =
     { options, inputs }:
+    assert !(options ? shellInit && options ? configFile);
     let
       inherit (inputs.nixpkgs.pkgs) writeText;
-      configFlag =
+
+      configNu =
         if options ? configFile then
-          [ "--config ${options.configFile}" ]
+          options.configFile
         else if options ? shellInit then
-          [ "--config ${writeText "config.nu" options.shellInit}" ]
+          writeText "config.nu" options.shellInit
         else
-          [];
+          null;
     in
-    assert !(options ? shellInit && options ? configFile);
     inputs.mkWrapper {
       name = "nu";
       inherit (options) package;
-      flags = configFlag;
+      preSymlink = ''
+        mkdir -p $out/nushell
+      '';
+      symlinks = {
+        "$out/nushell/config.nu" = configNu;
+      };
+      flags = (
+        if (configNu != null) then
+          [
+            "--config"
+            "$out/nushell/config.nu"
+          ]
+        else
+          []
+      );
     };
 }
