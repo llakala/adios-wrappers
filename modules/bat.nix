@@ -1,4 +1,4 @@
-{ types, ... }:
+{ types, ... } @ adios:
 {
   inputs = {
     mkWrapper.path = "/mkWrapper";
@@ -8,6 +8,7 @@
   options = {
     flags = {
       type = types.listOf types.string;
+      verify = adios.lib.disjointWith [ "configFile" ];
       description = ''
         Flags to be appended by default when running bat.
 
@@ -16,6 +17,7 @@
     };
     configFile = {
       type = types.pathLike;
+      verify = adios.lib.disjointWith [ "flags" ];
       description = ''
         File containing the flags to be appended by default when running bat.
 
@@ -32,7 +34,6 @@
 
   impl =
     { options, inputs }:
-    assert !(options ? flags && options ? configFile);
     if options ? flags then
       inputs.mkWrapper {
         inherit (options) package flags;

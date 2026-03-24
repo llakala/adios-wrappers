@@ -1,4 +1,4 @@
-{ types, ... }:
+{ types, ... } @ adios:
 {
   inputs = {
     mkWrapper.path = "/mkWrapper";
@@ -8,6 +8,7 @@
   options = {
     settings = {
       type = types.attrs;
+      verify = adios.lib.disjointWith [ "configFile" ];
       description = ''
         Settings to be injected into the wrapped package's `alacritty.toml`.
 
@@ -19,6 +20,7 @@
     };
     configFile = {
       type = types.pathLike;
+      verify = adios.lib.disjointWith [ "settings" ];
       description = ''
         `alacritty.toml` file to be injected into the wrapped package.
 
@@ -41,7 +43,6 @@
     let
       generator = inputs.nixpkgs.pkgs.formats.toml {};
     in
-    assert !(options ? settings && options ? configFile);
     inputs.mkWrapper {
       inherit (options) package;
       preSymlink = ''

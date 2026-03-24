@@ -8,6 +8,7 @@
   options = {
     settings = {
       type = types.attrs;
+      verify = adios.lib.disjointWith [ "configFile" ];
       description = ''
         Settings to be injected into the wrapped package's `starship.toml`.
 
@@ -19,6 +20,7 @@
     };
     configFile = {
       type = types.pathLike;
+      verify = adios.lib.disjointWith [ "settings" ];
       description = ''
         `starship.toml` file to be injected into the wrapped package.
 
@@ -45,18 +47,16 @@
           inherit (inputs.nixpkgs.lib) recursiveUpdate;
           inherit (adios.lib) merge;
           generator = inputs.nixpkgs.pkgs.formats.toml {};
-          default =
-            assert !(options ? settings && options ? configFile);
-            {
-              inherit (options) package;
-              environment.STARSHIP_CONFIG =
-                if options ? configFile then
-                  options.configFile
-                else if options ? settings then
-                  generator.generate "starship.toml" options.settings
-                else
-                  null;
-            };
+          default = {
+            inherit (options) package;
+            environment.STARSHIP_CONFIG =
+              if options ? configFile then
+                options.configFile
+              else if options ? settings then
+                generator.generate "starship.toml" options.settings
+              else
+                null;
+          };
         in
         # Allow mutators to change the default value, with the mutators taking
         # priority if the key is the same

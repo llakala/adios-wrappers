@@ -8,6 +8,7 @@
   options = {
     shellInit = {
       type = types.string;
+      verify = adios.lib.disjointWith [ "configFile" ];
       description = ''
         Shell initialisation code to be injected into the wrapped package's `config.nu`.
 
@@ -21,13 +22,14 @@
     };
     configFile = {
       type = types.pathLike;
+      verify = adios.lib.disjointWith [ "shellInit" ];
       description = ''
         `config.nu` file to be injected into the wrapped package.
 
         See the nushell documentation on file syntax:
         https://www.nushell.sh/book/configuration.html
 
-        Disjoint with the `config` option.
+        Disjoint with the `shellInit` option.
       '';
     };
 

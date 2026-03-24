@@ -1,4 +1,4 @@
-{ types, ... }:
+{ types, ... } @ adios:
 {
   inputs = {
     mkWrapper.path = "/mkWrapper";
@@ -11,6 +11,7 @@
   options = {
     configContents = {
       type = types.string;
+      verify = adios.lib.disjointWith [ "configFile" ];
       description = ''
         Config to be injected into the wrapped package's `config.kdl`.
 
@@ -22,6 +23,7 @@
     };
     configFile = {
       type = types.pathLike;
+      verify = adios.lib.disjointWith [ "configContents" ];
       description = ''
         `config.kdl` file to be injected into the wrapped package.
 
@@ -34,6 +36,7 @@
 
     layoutsContents = {
       type = types.attrsOf types.string;
+      verify = adios.lib.disjointWith [ "layoutsFiles" ];
       description = ''
         Custom layouts to be injected into the wrapped package.
 
@@ -45,6 +48,7 @@
     };
     layoutsFiles = {
       type = types.listOf types.pathLike;
+      verify = adios.lib.disjointWith [ "layoutsContents" ];
       description = ''
         Files containing custom layouts to be injected into the wrapped package.
 
@@ -85,8 +89,6 @@
       inherit (inputs.nixpkgs.pkgs) writeText;
       optionalAttrs = cond: attrs: if cond then attrs else {};
     in
-    assert !(options ? configContents && options ? configFile);
-    assert !(options ? layoutsContents && options ? layoutsFiles);
     inputs.mkWrapper {
       inherit (options) package;
       preSymlink = ''

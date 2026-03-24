@@ -1,4 +1,4 @@
-{ types, ... }:
+{ types, ... } @ adios:
 {
   inputs = {
     mkWrapper.path = "/mkWrapper";
@@ -8,6 +8,7 @@
   options = {
     settings = {
       type = types.attrs;
+      verify = adios.lib.disjointWith [ "configFile" ];
       description = ''
         Settings to be injected into the wrapped package's `config.toml`.
 
@@ -19,6 +20,7 @@
     };
     configFile = {
       type = types.pathLike;
+      verify = adios.lib.disjointWith [ "settings" ];
       description = ''
         `config.toml` file to be injected into the wrapped package.
 
@@ -31,6 +33,7 @@
 
     themes = {
       type = types.attrsOf types.attrs;
+      verify = adios.lib.disjointWith [ "themeDir" ];
       description = ''
         An attrset of custom themes, mapping the name of a theme to its settings.
 
@@ -42,6 +45,7 @@
     };
     themeDir = {
       type = types.pathLike;
+      verify = adios.lib.disjointWith [ "themes" ];
       description = ''
         Folder containing theme configuration files to be injected into the wrapped package.
 
@@ -53,6 +57,7 @@
 
     languages = {
       type = types.attrs;
+      verify = adios.lib.disjointWith [ "languagesFile" ];
       description = ''
         Language config to be injected into the wrapped package's `languages.toml`.
 
@@ -64,6 +69,7 @@
     };
     languagesFile = {
       type = types.pathLike;
+      verify = adios.lib.disjointWith [ "languages" ];
       description = ''
         `languages.toml` file to be injected into the wrapped package.
 
@@ -110,9 +116,6 @@
         else
           {};
     in
-    assert !(options ? settings && options ? configFile);
-    assert !(options ? themes && options ? themeDir);
-    assert !(options ? languages && options ? languagesFile);
     inputs.mkWrapper {
       inherit (options) package;
       binaryPath = "$out/bin/hx";

@@ -9,6 +9,7 @@
     # TODO: add mergeFunc for completions and functions options
     completions = {
       type = types.attrsOf types.string;
+      verify = adios.lib.disjointWith [ "completionsFiles" ];
       description = ''
         Custom completions to be injected into the wrapped package.
 
@@ -19,6 +20,7 @@
     };
     completionsFiles = {
       type = types.listOf types.pathLike;
+      verify = adios.lib.disjointWith [ "completions" ];
       description = ''
         Files containing custom completions to be injected into the wrapped package.
 
@@ -30,6 +32,7 @@
 
     functions = {
       type = types.attrsOf types.string;
+      verify = adios.lib.disjointWith [ "functionsFiles" ];
       description = ''
         Custom functions to be injected into the wrapped package.
 
@@ -40,6 +43,7 @@
     };
     functionsFiles = {
       type = types.listOf types.pathLike;
+      verify = adios.lib.disjointWith [ "functions" ];
       description = ''
         Files containing custom functions to be injected into the wrapped package.
 
@@ -169,8 +173,6 @@
       inherit (inputs.nixpkgs.pkgs) writeText;
       inherit (builtins) listToAttrs attrNames;
     in
-    assert !(options ? completions && options ? completionsFiles);
-    assert !(options ? functions && options ? functionsFiles);
     inputs.mkWrapper {
       inherit (options) package;
       symlinks = (

@@ -9,6 +9,7 @@ mapAttrs (
     (removeAttrs option [
       "defaultFunc"
       "mergeFunc"
+      "verify"
     ])
     // {
       type = option.type.name;

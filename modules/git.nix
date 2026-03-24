@@ -8,6 +8,7 @@
   options = {
     settings = {
       type = types.attrs;
+      verify = adios.lib.disjointWith [ "configFile" ];
       description = ''
         Settings to be injected into the wrapped package's `gitconfig`.
 
@@ -21,6 +22,7 @@
     };
     configFile = {
       type = types.pathLike;
+      verify = adios.lib.disjointWith [ "settings" ];
       description = ''
         `gitconfig` file to be injected into the wrapped package.
 
@@ -36,6 +38,7 @@
 
     ignoredPaths = {
       type = types.listOf types.string;
+      verify = adios.lib.disjointWith [ "ignoreFile" ];
       description = ''
         Extra path globs to be ignored automatically, along with the repo-specific `.gitignore`.
 
@@ -44,6 +47,7 @@
     };
     ignoreFile = {
       type = types.pathLike;
+      verify = adios.lib.disjointWith [ "ignoredPaths" ];
       description = ''
         File containing extra path globs to be ignored automatically, along with the repo-specific `.gitignore`.
 
@@ -71,8 +75,6 @@
       inherit (inputs.nixpkgs.pkgs) writeText;
       inherit (inputs.nixpkgs.lib.generators) toGitINI;
     in
-    assert !(options ? settings && options ? configFile);
-    assert !(options ? ignoredPaths && options ? ignoreFile);
     inputs.mkWrapper {
       name = "git"; # Default derivation name is git-with-svn
       inherit (options) package;

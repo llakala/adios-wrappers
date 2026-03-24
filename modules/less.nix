@@ -1,4 +1,4 @@
-{ types, ... }:
+{ types, ... } @ adios:
 {
   inputs = {
     mkWrapper.path = "/mkWrapper";
@@ -8,6 +8,7 @@
   options = {
     flags = {
       type = types.listOf types.string;
+      verify = adios.lib.disjointWith [ "configFile" ];
       description = ''
         Flags to be automatically appended when running less.
 
@@ -21,6 +22,7 @@
     # TODO: add rfc42 variants of the #command and #line-edit sections
     configFile = {
       type = types.pathLike;
+      verify = adios.lib.disjointWith [ "flags" ];
       description = ''
         `lesskey` file to be injected into the wrapped package.
 
@@ -46,7 +48,6 @@
     let
       inherit (builtins) concatStringsSep;
     in
-    assert !(options ? flags && options ? configFile);
     inputs.mkWrapper {
       inherit (options) package;
       environment = {

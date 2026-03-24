@@ -1,4 +1,4 @@
-{ types, ... }:
+{ types, ... } @ adios:
 {
   inputs = {
     mkWrapper.path = "/mkWrapper";
@@ -8,6 +8,7 @@
   options = {
     settings = {
       type = types.attrs;
+      verify = adios.lib.disjointWith [ "configDir" ];
       description = ''
         Settings to be injected into the wrapped package's `config.yml`.
 
@@ -19,6 +20,7 @@
     };
     hosts = {
       type = types.attrs;
+      verify = adios.lib.disjointWith [ "configDir" ];
       description = ''
         Host information to be injected into the wrapped package's `hosts.yml`.
 
@@ -27,6 +29,10 @@
     };
     configDir = {
       type = types.pathLike;
+      verify = adios.lib.disjointWith [
+        "settings"
+        "hosts"
+      ];
       description = ''
         Folder containing gh configuration files to be injected into the wrapped package.
 
@@ -68,7 +74,6 @@
           value
       );
     in
-    assert !(options ? configDir && (options ? settings || options ? hosts));
     if options ? configDir then
       inputs.mkWrapper {
         inherit (options) package;

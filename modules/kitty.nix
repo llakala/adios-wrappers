@@ -1,4 +1,4 @@
-{ types, ... }:
+{ types, ... } @ adios:
 {
   inputs = {
     mkWrapper.path = "/mkWrapper";
@@ -8,6 +8,7 @@
   options = {
     settings = {
       type = types.attrs;
+      verify = adios.lib.disjointWith [ "configFile" ];
       description = ''
         Settings to be injected into the wrapped package's `kitty.conf`.
 
@@ -19,6 +20,7 @@
     };
     configFile = {
       type = types.pathLike;
+      verify = adios.lib.disjointWith [ "settings" ];
       description = ''
         `kitty.conf` file to be injected into the wrapped package.
 
@@ -31,18 +33,24 @@
 
     theme = {
       type = types.string;
+      verify = adios.lib.disjointWith [ "themeFile" ];
       description = ''
         Theme name from `pkgs.kitty-themes` to be used.
 
         Each of the files in this folder constitute a valid theme:
         https://github.com/kovidgoyal/kitty-themes/tree/master/themes
+
+        Disjoint with the `themeFile` option.
       '';
       example = "Catppuccin-Mocha";
     };
     themeFile = {
       type = types.pathLike;
+      verify = adios.lib.disjointWith [ "theme" ];
       description = ''
         Path containing a Kitty theme to be used.
+
+        Disjoint with the `theme` option.
       '';
     };
 
@@ -85,8 +93,6 @@
         } " ";
       };
     in
-    assert !(options ? settings && options ? configFile);
-    assert !(options ? theme && options ? themeFile);
     inputs.mkWrapper {
       inherit (options) package;
       preSymlink = ''
