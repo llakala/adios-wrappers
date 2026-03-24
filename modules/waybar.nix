@@ -1,4 +1,4 @@
-{ types, ... }:
+{ types, ... } @ adios:
 {
   inputs = {
     mkWrapper.path = "/mkWrapper";
@@ -8,6 +8,7 @@
   options = {
     settings = {
       type = types.attrs;
+      verify = adios.lib.disjointWith [ "configFile" ];
       description = ''
         Settings to be injected into the wrapped package's `config.jsonc`.
 
@@ -19,6 +20,7 @@
     };
     configFile = {
       type = types.pathLike;
+      verify = adios.lib.disjointWith [ "settings" ];
       description = ''
         `config.jsonc` file to be injected into the wrapped package.
 
@@ -31,6 +33,7 @@
 
     barStyle = {
       type = types.string;
+      verify = adios.lib.disjointWith [ "cssFile" ];
       description = ''
         CSS to be injected into the wrapped package's `style.css`.
 
@@ -42,6 +45,7 @@
     };
     cssFile = {
       type = types.pathLike;
+      verify = adios.lib.disjointWith [ "barStyle" ];
       description = ''
         `style.css` file to be injected into the wrapped package.
 
@@ -79,8 +83,6 @@
       inherit (inputs.nixpkgs.pkgs) writeText;
       inherit (inputs.nixpkgs.lib.generators) toJSON;
     in
-    assert !(options ? settings && options ? configFile);
-    assert !(options ? barStyle && options ? cssFile);
     let
       configFlag =
         if options ? configFile then

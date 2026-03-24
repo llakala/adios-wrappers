@@ -1,4 +1,4 @@
-{ types, ... }:
+{ types, ... } @ adios:
 {
   inputs = {
     mkWrapper.path = "/mkWrapper";
@@ -8,6 +8,7 @@
   options = {
     settings = {
       type = types.attrs;
+      verify = adios.lib.disjointWith [ "configFile" ];
       description = ''
         Settings to be injected into the wrapped package's `direnv.toml`.
 
@@ -19,6 +20,7 @@
     };
     configFile = {
       type = types.pathLike;
+      verify = adios.lib.disjointWith [ "settings" ];
       description = ''
         `direnv.toml` file to be injected into the wrapped package.
 
@@ -30,20 +32,26 @@
     };
     direnvrc = {
       type = types.string;
+      verify = adios.lib.disjointWith [ "direnvrcFile" ];
       description = ''
-        Custom direnvrc definition to be injected into the wrapped packages `direnvrc`
+        Custom direnvrc contents to be injected into the wrapped packages `direnvrc`
 
         The syntax is described at:
         https://direnv.net/#the-stdlib
+
+        Disjoint with the `direnvrcFile` option.
       '';
     };
     direnvrcFile = {
       type = types.string;
+      verify = adios.lib.disjointWith [ "direnvrc" ];
       description = ''
         `direnvrc` file to be copied into the wrapped package.
 
         The syntax is described at:
         https://direnv.net/#the-stdlib
+
+        Disjoint with the `direnvrc` option.
       '';
     };
     package = {
@@ -103,8 +111,6 @@
 
   impl =
     { options, inputs }:
-    assert !(options ? settings && options ? configFile);
-    assert !(options ? direnvrc && options ? direnvrcFile);
     let
       inherit (inputs.nixpkgs.pkgs) formats writeText nix-direnv;
       generator = formats.toml {};

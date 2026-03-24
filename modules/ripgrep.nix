@@ -1,4 +1,4 @@
-{ types, ... }:
+{ types, ... } @ adios:
 {
   inputs = {
     mkWrapper.path = "/mkWrapper";
@@ -8,6 +8,7 @@
   options = {
     flags = {
       type = types.listOf types.string;
+      verify = adios.lib.disjointWith [ "configFile" ];
       description = ''
         Flags to be automatically appended when running ripgrep.
 
@@ -19,6 +20,7 @@
     };
     configFile = {
       type = types.pathLike;
+      verify = adios.lib.disjointWith [ "flags" ];
       description = ''
         `ripgreprc` file, containing flags to be automatically appended when running ripgrep.
 
@@ -41,7 +43,6 @@
 
   impl =
     { options, inputs }:
-    assert !(options ? flags && options ? configFile);
     if options ? flags then
       inputs.mkWrapper {
         name = "rg";

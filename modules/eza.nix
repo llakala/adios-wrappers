@@ -1,4 +1,4 @@
-{ types, ... }:
+{ types, ... } @ adios:
 {
   inputs = {
     mkWrapper.path = "/mkWrapper";
@@ -16,6 +16,7 @@
 
     themes = {
       type = types.attrs;
+      verify = adios.lib.disjointWith [ "themeFile" ];
       description = ''
         Settings to be injected into the wrapped package's `theme.yml`.
 
@@ -26,12 +27,13 @@
     };
     themeFile = {
       type = types.pathLike;
+      verify = adios.lib.disjointWith [ "themes" ];
       description = ''
         `theme.yml` file to be injected into the wrapped package.
 
         See `https://github.com/eza-community/eza/blob/main/man/eza_colors-explanation.5.md` for valid options
 
-        Disjoint with the `themeConfig` option.
+        Disjoint with the `themes` option.
       '';
     };
 
@@ -48,7 +50,6 @@
       inherit (inputs.nixpkgs.pkgs) writeText;
       inherit (inputs.nixpkgs.lib.generators) toJSON;
     in
-    assert !(options ? themeConfig && options ? themeFile);
     inputs.mkWrapper {
       inherit (options) package flags;
       preSymlink = ''

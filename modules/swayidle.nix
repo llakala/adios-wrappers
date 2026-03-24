@@ -1,4 +1,4 @@
-{ types, ... }:
+{ types, ... } @ adios:
 {
   inputs = {
     mkWrapper.path = "/mkWrapper";
@@ -8,6 +8,7 @@
   options = {
     configContents = {
       type = types.string;
+      verify = adios.lib.disjointWith [ "configFile" ];
       description = ''
         Settings to be injected into the wrapped package's `config` file.
 
@@ -18,6 +19,7 @@
     };
     configFile = {
       type = types.pathLike;
+      verify = adios.lib.disjointWith [ "configContents" ];
       description = ''
         `config` file to be injected into the wrapped package.
 
@@ -60,7 +62,6 @@
         else
           [];
     in
-    assert !(options ? configContents && options ? configFile);
     inputs.mkWrapper {
       inherit (options) package;
       symlinks = {

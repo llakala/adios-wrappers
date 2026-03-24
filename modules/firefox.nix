@@ -1,4 +1,4 @@
-{ types, ... }:
+{ types, ... } @ adios:
 {
   inputs = {
     nixpkgs.path = "/nixpkgs";
@@ -17,6 +17,7 @@
 
     policies = {
       type = types.attrs;
+      verify = adios.lib.disjointWith [ "policiesFiles" ];
       description = ''
         Policies to be injected into the wrapped package.
 
@@ -27,6 +28,7 @@
     };
     policiesFiles = {
       type = types.listOf types.pathLike;
+      verify = adios.lib.disjointWith [ "policies" ];
       description = ''
         JSON files containing policies to be injected into the wrapped package.
 
@@ -65,7 +67,6 @@
       inherit (builtins) filter attrNames;
       filterNullAttrs = set: removeAttrs set (filter (name: isNull set.${name}) (attrNames set));
     in
-    assert !(options ? policies && options ? policiesFiles);
     wrapFirefox options.package (filterNullAttrs {
       extraPolicies = options.policies or null;
       # From my testing, these options need to be coerced to store paths.

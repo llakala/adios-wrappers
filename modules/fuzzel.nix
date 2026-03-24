@@ -1,4 +1,4 @@
-{ types, ... }:
+{ types, ... } @ adios:
 {
   inputs = {
     mkWrapper.path = "/mkWrapper";
@@ -8,6 +8,7 @@
   options = {
     settings = {
       type = types.attrs;
+      verify = adios.lib.disjointWith [ "configFile" ];
       description = ''
         Settings to be injected into the wrapped package's `fuzzel.ini`.
 
@@ -19,6 +20,7 @@
     };
     configFile = {
       type = types.pathLike;
+      verify = adios.lib.disjointWith [ "settings" ];
       description = ''
         `fuzzel.ini` file to be injected into the wrapped package.
 
@@ -86,17 +88,16 @@
     in
     assert (
       if options ? dmenuFlags then
-        (options ? settings || options ? configFile)
+        options ? settings || options ? configFile
       else
         true
     );
     assert (
       if options ? logFlags then
-        (options ? settings || options ? configFile)
+        options ? settings || options ? configFile
       else
         true
     );
-    assert !(options ? settings && options ? configFile);
     let
       dmenuFlags =
         if options ? dmenuFlags then

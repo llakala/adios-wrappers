@@ -57,11 +57,11 @@
       "type": "pathLike"
     },
     "direnvrc": {
-      "description": "Custom direnvrc definition to be injected into the wrapped packages `direnvrc` The syntax is described at: https://direnv.net/#the-stdlib",
+      "description": "Custom direnvrc contents to be injected into the wrapped packages `direnvrc` The syntax is described at: https://direnv.net/#the-stdlib Disjoint with the `direnvrcFile` option.",
       "type": "string"
     },
     "direnvrcFile": {
-      "description": "`direnvrc` file to be copied into the wrapped package. The syntax is described at: https://direnv.net/#the-stdlib",
+      "description": "`direnvrc` file to be copied into the wrapped package. The syntax is described at: https://direnv.net/#the-stdlib Disjoint with the `direnvrc` option.",
       "type": "string"
     },
     "package": {
@@ -108,7 +108,7 @@
       "type": "derivation"
     },
     "themeFile": {
-      "description": "`theme.yml` file to be injected into the wrapped package. See `https://github.com/eza-community/eza/blob/main/man/eza_colors-explanation.5.md` for valid options Disjoint with the `themeConfig` option.",
+      "description": "`theme.yml` file to be injected into the wrapped package. See `https://github.com/eza-community/eza/blob/main/man/eza_colors-explanation.5.md` for valid options Disjoint with the `themes` option.",
       "type": "pathLike"
     },
     "themes": {
@@ -320,12 +320,12 @@
       "type": "attrs"
     },
     "theme": {
-      "description": "Theme name from `pkgs.kitty-themes` to be used. Each of the files in this folder constitute a valid theme: https://github.com/kovidgoyal/kitty-themes/tree/master/themes",
+      "description": "Theme name from `pkgs.kitty-themes` to be used. Each of the files in this folder constitute a valid theme: https://github.com/kovidgoyal/kitty-themes/tree/master/themes Disjoint with the `themeFile` option.",
       "example": "Catppuccin-Mocha",
       "type": "string"
     },
     "themeFile": {
-      "description": "Path containing a Kitty theme to be used.",
+      "description": "Path containing a Kitty theme to be used. Disjoint with the `theme` option.",
       "type": "pathLike"
     }
   },
@@ -412,7 +412,7 @@
 
   "nushell": {
     "configFile": {
-      "description": "`config.nu` file to be injected into the wrapped package. See the nushell documentation on file syntax: https://www.nushell.sh/book/configuration.html Disjoint with the `config` option.",
+      "description": "`config.nu` file to be injected into the wrapped package. See the nushell documentation on file syntax: https://www.nushell.sh/book/configuration.html Disjoint with the `shellInit` option.",
       "type": "pathLike"
     },
     "package": {

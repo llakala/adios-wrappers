@@ -1,4 +1,4 @@
-{ types, ... }:
+{ types, ... } @ adios:
 {
   inputs = {
     mkWrapper.path = "/mkWrapper";
@@ -8,6 +8,7 @@
   options = {
     settings = {
       type = types.attrs;
+      verify = adios.lib.disjointWith [ "settingsFile" ];
       description = ''
         Settings to be injected into the wrapped package's `yazi.toml`.
 
@@ -19,6 +20,7 @@
     };
     settingsFile = {
       type = types.pathLike;
+      verify = adios.lib.disjointWith [ "settings" ];
       description = ''
         `yazi.toml` file to be injected into the wrapped package.
 
@@ -31,6 +33,7 @@
 
     keymap = {
       type = types.attrs;
+      verify = adios.lib.disjointWith [ "keymapFile" ];
       description = ''
         Keybinds injected into the wrapped package's `keymap.toml`.
 
@@ -42,6 +45,7 @@
     };
     keymapFile = {
       type = types.pathLike;
+      verify = adios.lib.disjointWith [ "keymap" ];
       description = ''
         `keymap.toml` file to be injected into the wrapped package.
 
@@ -54,6 +58,7 @@
 
     theme = {
       type = types.attrs;
+      verify = adios.lib.disjointWith [ "themeFile" ];
       description = ''
         Theme settings to be injected into the wrapped package's `theme.toml`.
 
@@ -65,6 +70,7 @@
     };
     themeFile = {
       type = types.pathLike;
+      verify = adios.lib.disjointWith [ "theme" ];
       description = ''
         `theme.toml` file to be injected into the wrapped package.
 
@@ -77,6 +83,7 @@
 
     initLua = {
       type = types.string;
+      verify = adios.lib.disjointWith [ "initLuaFile" ];
       description = ''
         Lua script to be injected into the wrapped package's `init.lua`.
 
@@ -88,6 +95,7 @@
     };
     initLuaFile = {
       type = types.pathLike;
+      verify = adios.lib.disjointWith [ "initLua" ];
       description = ''
         `init.lua` file to be injected into the wrapped package.
 
@@ -161,9 +169,6 @@
       optionalAttrs = cond: attrs: if cond then attrs else {};
       generator = pkgs.formats.toml {};
     in
-    assert !(options ? settings && options ? settingsFile);
-    assert !(options ? keymap && options ? keymapFile);
-    assert !(options ? initLua && options ? initLuaFile);
     inputs.mkWrapper {
       inherit (options) package;
       preSymlink = ''
