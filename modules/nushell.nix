@@ -13,24 +13,27 @@
 
         See the nushell documentation for valid options:
         https://www.nushell.sh/book/configuration.html
-
-        Disjoint with the `configFile` option.
       '';
       mutatorType = types.string;
       mergeFunc = adios.lib.merge.strings.concatLines;
     };
-    configFile = {
-      type = types.pathLike;
+    sourceFiles = {
+      type = types.listOf types.pathLike;
       description = ''
-        `config.nu` file to be injected into the wrapped package.
-
-        See the nushell documentation on file syntax:
-        https://www.nushell.sh/book/configuration.html
-
-        Disjoint with the `config` option.
+        A list of paths to source in the `config.nu` file.
+        This can be used to import extra files, and can be used with impurity
       '';
+      mutatorType = types.listOf types.pathLike;
+      mergeFunc = adios.lib.merge.lists.concat;
     };
-
+    extraPackages = {
+      type = types.listOf types.derivation;
+      description = ''
+        Runtime dependencies to be injected into the wrapped package's path.
+      '';
+      mutatorType = types.listOf types.derivation;
+      mergeFunc = adios.lib.merge.lists.concat;
+    };
     package = {
       type = types.derivation;
       description = "The nushell package to be wrapped.";
@@ -41,34 +44,41 @@
   impl =
     { options, inputs }:
     let
+      inherit (builtins) concatStringsSep;
       inherit (inputs.nixpkgs.pkgs) writeText;
-      configNu =
-        if options ? configFile then
-          options.configFile
-        else if options ? shellInit then
-          writeText "config.nu" options.shellInit
-        else
-          null;
+      inherit (inputs.nixpkgs.lib) makeBinPath;
+
+      assembledConfig = concatStringsSep "\n" (
+        (
+          if options ? sourceFiles then
+            map (el: "source ${el}") options.sourceFiles
+          else
+            []
+        )
+        ++ (
+          if options ? shellInit then
+            [ options.shellInit ]
+          else
+            []
+        )
+      );
     in
     assert !(options ? shellInit && options ? configFile);
     inputs.mkWrapper {
       name = "nu";
       inherit (options) package;
+      wrapperArgs =
+        if options ? extraPackages then "--prefix PATH : ${makeBinPath options.extraPackages}" else null;
       preSymlink = ''
         mkdir -p $out/nushell
       '';
       symlinks = {
-        "$out/nushell/config.nu" = configNu;
+        "$out/nushell/config.nu" = writeText "config.nu" assembledConfig;
       };
-      flags = (
-        if (configNu != null) then
-          [
-            "--config"
-            "$out/nushell/config.nu"
-          ]
-        else
-          []
-      );
+      flags = [
+        "--config"
+        "$out/nushell/config.nu"
+      ];
     };
 
   meta = {

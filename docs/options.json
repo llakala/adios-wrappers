@@ -466,18 +466,24 @@
   },
 
   "nushell": {
-    "configFile": {
-      "description": "`config.nu` file to be injected into the wrapped package. See the nushell documentation on file syntax: https://www.nushell.sh/book/configuration.html Disjoint with the `config` option.",
-      "type": "pathLike"
+    "extraPackages": {
+      "description": "Runtime dependencies to be injected into the wrapped package's path.",
+      "mutatorType": "listOf<derivation>",
+      "type": "listOf<derivation>"
     },
     "package": {
       "description": "The nushell package to be wrapped.",
       "type": "derivation"
     },
     "shellInit": {
-      "description": "Shell initialisation code to be injected into the wrapped package's `config.nu`. See the nushell documentation for valid options: https://www.nushell.sh/book/configuration.html Disjoint with the `configFile` option.",
+      "description": "Shell initialisation code to be injected into the wrapped package's `config.nu`. See the nushell documentation for valid options: https://www.nushell.sh/book/configuration.html",
       "mutatorType": "string",
       "type": "string"
+    },
+    "sourceFiles": {
+      "description": "A list of paths to source in the `config.nu` file. This can be used to import extra files, and can be used with impurity",
+      "mutatorType": "listOf<pathLike>",
+      "type": "listOf<pathLike>"
     }
   },
 
