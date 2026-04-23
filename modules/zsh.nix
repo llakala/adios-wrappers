@@ -173,10 +173,13 @@
       inherit (inputs.nixpkgs.pkgs) writeText;
       inherit (inputs.nixpkgs.lib) makeBinPath;
       inherit (builtins) concatStringsSep attrNames;
-      optionalString = cond: string: if cond then string else "";
-      # Apply some function to each element in the list, then concat all the
-      # elements together with newlines in between
-      mapAndConcat = func: elems: (concatStringsSep "\n" (map func elems)) + "\n";
+      optionals = cond: list: if cond then list else [];
+      optional =
+        cond: elem:
+        if cond then
+          [ elem ]
+        else
+          [];
       # Whether a .zshrc should be generated
       shouldConfigure =
         options ? zshrc
@@ -187,24 +190,22 @@
         || options ? variables;
       zshrc =
         let
-          zshrcFiles = optionalString (options ? zshrcFiles) (
-            mapAndConcat (file: "source ${file}") options.zshrcFiles
+          zshrcFiles = optionals (options ? zshrcFiles) (map (file: "source ${file}") options.zshrcFiles);
+          extraZshrcFiles = optionals (options ? extraZshrcFiles) (
+            map (file: "source ${file}") options.extraZshrcFiles
           );
-          extraZshrcFiles = optionalString (options ? extraZshrcFiles) (
-            mapAndConcat (file: "source ${file}") options.extraZshrcFiles
-          );
-          zshrcText = optionalString (options ? zshrc) "${options.zshrc}\n";
-          extraZshrcText = optionalString (options ? extraZshrc) "${options.extraZshrc}\n";
-          settings = optionalString (options ? settings) (
-            mapAndConcat (name: if options.settings.${name} then "setopt ${name}" else "unsetopt ${name}") (
+          zshrcText = optional (options ? zshrc) options.zshrc;
+          extraZshrcText = optional (options ? extraZshrc) options.extraZshrc;
+          settings = optionals (options ? settings) (
+            map (name: if options.settings.${name} then "setopt ${name}" else "unsetopt ${name}") (
               attrNames options.settings
             )
           );
-          variables = optionalString (options ? variables) (
-            mapAndConcat (name: "${name}=${toString options.variables.${name}}") (attrNames options.variables)
+          variables = optionals (options ? variables) (
+            map (name: "${name}=${toString options.variables.${name}}") (attrNames options.variables)
           );
-          aliases = optionalString (options ? aliases) (
-            mapAndConcat (
+          aliases = optionals (options ? aliases) (
+            map (
               name:
               let
                 value = options.aliases.${name};
@@ -215,8 +216,8 @@
                 "alias ${name}='${value.command or value}'"
             ) (attrNames options.aliases)
           );
-          plugins = optionalString (options ? plugins) (
-            mapAndConcat (
+          plugins = optionals (options ? plugins) (
+            map (
               plugin:
               if plugin ? path then
                 "source ${plugin.package}/${plugin.path}"
@@ -225,14 +226,16 @@
             ) options.plugins
           );
         in
-        zshrcFiles
-        + zshrcText
-        + variables
-        + aliases
-        + settings
-        + extraZshrcFiles
-        + extraZshrcText
-        + plugins;
+        concatStringsSep "\n" (
+          zshrcFiles
+          ++ zshrcText
+          ++ variables
+          ++ aliases
+          ++ settings
+          ++ extraZshrcFiles
+          ++ extraZshrcText
+          ++ plugins
+        );
     in
     inputs.mkWrapper {
       inherit (options) package;
