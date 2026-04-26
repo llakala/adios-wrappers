@@ -103,4 +103,8 @@
         GTK_DEBUG = if (options.interactiveEnv or false) then "interactive" else null;
       };
     };
+
+  meta = {
+    maintainers = [ "mango" ];
+  };
 }
