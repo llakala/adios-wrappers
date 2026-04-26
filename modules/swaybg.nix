@@ -68,4 +68,8 @@
           options.outputName
         ]);
     };
+
+  meta = {
+    maintainers = [ "poacher" ];
+  };
 }

@@ -74,4 +74,8 @@
       };
       flags = configFlag ++ styleFlag;
     };
+
+  meta = {
+    maintainers = [ "poacher" ];
+  };
 }

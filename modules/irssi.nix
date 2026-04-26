@@ -104,4 +104,8 @@
       };
       flags = homeFlag ++ configFlag ++ autoconnectFlag ++ nicknameFlag ++ hostnameFlag;
     };
+
+  meta = {
+    maintainers = [ "poacher" ];
+  };
 }

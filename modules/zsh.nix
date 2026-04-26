@@ -245,4 +245,8 @@
         ZDOTDIR = if shouldConfigure then "$out" else null;
       };
     };
+
+  meta = {
+    maintainers = [ "poacher" ];
+  };
 }

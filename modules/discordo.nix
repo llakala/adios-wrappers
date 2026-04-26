@@ -86,4 +86,8 @@
             null;
       };
     };
+
+  meta = {
+    maintainers = [ "poacher" ];
+  };
 }
