@@ -106,4 +106,8 @@
       };
       flags = configFlag ++ autostartFlag;
     };
+
+  meta = {
+    maintainers = [ "squawky" ];
+  };
 }

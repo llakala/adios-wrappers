@@ -70,4 +70,8 @@
           []
       );
     };
+
+  meta = {
+    maintainers = [ "squawky" ];
+  };
 }
