@@ -69,51 +69,72 @@
       '';
     };
 
-    package = {
-      type = types.derivation;
-      description = "The fuzzel package to be wrapped.";
-      defaultFunc = { inputs }: inputs.nixpkgs.pkgs.fuzzel;
-    };
-  };
-
-  impl =
-    { options, inputs }:
-    let
-      inherit (inputs.nixpkgs.pkgs) writeText;
-      inherit (inputs.nixpkgs.lib) optionals;
-      inherit (inputs.nixpkgs.lib.generators) toIni;
-      inherit (builtins) head;
-      dmenuFlags =
-        if options ? dmenuFlags then
-          optionals (options.dmenuFlags ? dmenu && options.dmenuFlags.dmenu) [ "--dmenu" ]
-          ++ optionals (options.dmenuFlags ? dmenu0 && options.dmenuFlags.dmenu0) [ "--dmenu0" ]
-          ++ optionals (options.dmenuFlags ? withNth) [ "--with-nth=${options.dmenuFlags.withNth}" ]
-          ++ optionals (options.dmenuFlags ? acceptNth) [ "--accept-nth=${options.dmenuFlags.acceptNth}" ]
-          ++ optionals (options.dmenuFlags ? delimitNth) [
-            "--nth-delimiter=${options.dmenuFlags.delimitNth}"
-          ]
-          ++ optionals (options.dmenuFlags ? noEmpty && options.dmenuFlags.noEmpty) [ "--no-run-if-empty" ]
-        else
-          [];
-      logsFlags =
-        if options ? logFlags then
-          optionals (options.logFlags ? logLevel) [ "--log-level=${options.logFlags.logLevel}" ]
-          ++ optionals (options.logFlags ? colorize) [ "--log-colorize=${options.logFlags.colorize}" ]
-          ++ optionals (options.logFlags ? noSyslog && options.logFlags.noSyslog) [ "--log-no-syslog" ]
-          ++ optionals (options.logFlags ? printTiming && options.logFlags.printTming) [
-            "--print-timing-info"
-          ]
-        else
-          [];
-      configFlag =
+    _configFlag = {
+      type = types.listOf types.string;
+      description = ''
+        Implementation detail, please ignore!
+      '';
+      defaultFunc =
+        { options, inputs }:
+        let
+          inherit (inputs.nixpkgs.pkgs) writeText;
+          inherit (inputs.nixpkgs.lib.generators) toIni;
+        in
         if options ? configFile then
           [ "--config=${options.configFile}" ]
         else if options ? settings then
           [ "--config=${writeText "fuzzel.ini" (toIni options.settings)}" ]
         else
           [];
-      flags = dmenuFlags ++ logsFlags ++ configFlag;
-    in
+    };
+  };
+
+  inputs.mkWrapper.overrides = {
+    name.value = "fuzzel";
+    package.computedValue = { inputs }: inputs.nixpkgs.pkgs.fuzzel;
+    preWrap.computedValue =
+      { options }:
+      let
+        inherit (builtins) head;
+      in
+      if options ? settings || options ? configFile then
+        ''
+          exec $out/bin/fuzzel --check-config ${head options._configFlag}
+        ''
+      else
+        "";
+    flags.computedValue =
+      { options, inputs }:
+      let
+        inherit (inputs.nixpkgs.lib) optionals;
+        dmenuFlags =
+          if options ? dmenuFlags then
+            optionals (options.dmenuFlags ? dmenu && options.dmenuFlags.dmenu) [ "--dmenu" ]
+            ++ optionals (options.dmenuFlags ? dmenu0 && options.dmenuFlags.dmenu0) [ "--dmenu0" ]
+            ++ optionals (options.dmenuFlags ? withNth) [ "--with-nth=${options.dmenuFlags.withNth}" ]
+            ++ optionals (options.dmenuFlags ? acceptNth) [ "--accept-nth=${options.dmenuFlags.acceptNth}" ]
+            ++ optionals (options.dmenuFlags ? delimitNth) [
+              "--nth-delimiter=${options.dmenuFlags.delimitNth}"
+            ]
+            ++ optionals (options.dmenuFlags ? noEmpty && options.dmenuFlags.noEmpty) [ "--no-run-if-empty" ]
+          else
+            [];
+        logsFlags =
+          if options ? logFlags then
+            optionals (options.logFlags ? logLevel) [ "--log-level=${options.logFlags.logLevel}" ]
+            ++ optionals (options.logFlags ? colorize) [ "--log-colorize=${options.logFlags.colorize}" ]
+            ++ optionals (options.logFlags ? noSyslog && options.logFlags.noSyslog) [ "--log-no-syslog" ]
+            ++ optionals (options.logFlags ? printTiming && options.logFlags.printTming) [
+              "--print-timing-info"
+            ]
+          else
+            [];
+      in
+      options._configFlag ++ dmenuFlags ++ logsFlags;
+  };
+
+  impl =
+    { options, inputs }:
     assert (
       if options ? dmenuFlags then
         (options ? settings || options ? configFile)
@@ -127,16 +148,5 @@
         true
     );
     assert !(options ? settings && options ? configFile);
-    inputs.mkWrapper {
-      name = "fuzzel";
-      inherit (options) package;
-      inherit flags;
-      preWrap =
-        if options ? settings || options ? configFile then
-          ''
-            exec $out/bin/fuzzel --check-config ${head configFlag}
-          ''
-        else
-          "";
-    };
+    inputs.mkWrapper {};
 }

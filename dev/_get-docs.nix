@@ -16,5 +16,5 @@ mapAttrs (
     // optionalAttrs (option ? mutatorType) {
       mutatorType = option.mutatorType.name;
     }
-  ) wrapper.options
+  ) (wrapper.options or {})
 ) (getFlake (toString ../.)).wrapperModules

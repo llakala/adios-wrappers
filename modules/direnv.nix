@@ -46,11 +46,6 @@
         https://direnv.net/#the-stdlib
       '';
     };
-    package = {
-      type = types.derivation;
-      description = "The direnv package to be wrapped.";
-      defaultFunc = { inputs }: inputs.nixpkgs.pkgs.direnv;
-    };
   };
 
   mutations."/fish".interactiveShellInit =
@@ -101,20 +96,17 @@
       )
     '';
 
-  impl =
-    { options, inputs }:
-    let
-      inherit (inputs.nixpkgs.pkgs) formats writeText nix-direnv;
-      generator = formats.toml {};
-    in
-    assert !(options ? settings && options ? configFile);
-    assert !(options ? direnvrc && options ? direnvrcFile);
-    inputs.mkWrapper {
-      inherit (options) package;
-      preSymlink = ''
-        mkdir -p $out/direnv/lib
-      '';
-      symlinks = {
+  inputs.mkWrapper.overrides = {
+    package.computedValue = { inputs }: inputs.nixpkgs.pkgs.direnv;
+    preSymlink.value = ''
+      mkdir -p $out/direnv/lib
+    '';
+    symlinks.computedValue =
+      { options, inputs }:
+      let
+        inherit (inputs.nixpkgs.pkgs) formats writeText nix-direnv;
+        generator = formats.toml {};
+      in {
         "$out/direnv/direnv.toml" =
           if options ? configFile then
             options.configFile
@@ -132,10 +124,16 @@
           else
             null;
       };
-      environment = {
-        XDG_CONFIG_HOME = "$out";
-      };
+    environment.value = {
+      XDG_CONFIG_HOME = "$out";
     };
+  };
+
+  impl =
+    { options, inputs }:
+    assert !(options ? settings && options ? configFile);
+    assert !(options ? direnvrc && options ? direnvrcFile);
+    inputs.mkWrapper {};
 
   meta = {
     maintainers = [ "squawky" ];

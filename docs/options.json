@@ -4,10 +4,6 @@
       "description": "`alacritty.toml` file to be injected into the wrapped package. See the alacritty documentation: https://alacritty.org/config-alacritty.html Disjoint with the `settings` option.",
       "type": "pathLike"
     },
-    "package": {
-      "description": "The alacritty package to be wrapped.",
-      "type": "derivation"
-    },
     "settings": {
       "description": "Settings to be injected into the wrapped package's `alacritty.toml`. See the alacritty documentation: https://alacritty.org/config-alacritty.html Disjoint with the `configFile` option.",
       "type": "attrs"
@@ -22,10 +18,6 @@
     "flags": {
       "description": "Flags to be appended by default when running bat. Disjoint with the `configFile` option.",
       "type": "listOf<string>"
-    },
-    "package": {
-      "description": "The bat package to be wrapped.",
-      "type": "derivation"
     }
   },
 
@@ -34,23 +26,13 @@
       "description": "`bottom.toml` file to be injected into the wrapped package. See the bottom documentation for valid options: https://bottom.pages.dev/nightly/configuration/config-file/ Disjoint with the `settings` option.",
       "type": "pathLike"
     },
-    "package": {
-      "description": "The bottom package to be wrapped.",
-      "type": "derivation"
-    },
     "settings": {
       "description": "Settings to be injected into the wrapped package's `bottom.toml`. See the bottom documentation for valid options: https://bottom.pages.dev/nightly/configuration/config-file/ Disjoint with the `configFile` option.",
       "type": "attrs"
     }
   },
 
-  "diff-so-fancy": {
-    "package": {
-      "description": "The diff-so-fancy package to be wrapped.",
-      "type": "derivation"
-    }
-  },
-
+  "diff-so-fancy": {},
   "direnv": {
     "configFile": {
       "description": "`direnv.toml` file to be injected into the wrapped package. See the direnv documentation for valid options: {manpage}`direnv.toml(1)`. Disjoint with the `settings` option.",
@@ -63,10 +45,6 @@
     "direnvrcFile": {
       "description": "`direnvrc` file to be copied into the wrapped package. The syntax is described at: https://direnv.net/#the-stdlib",
       "type": "string"
-    },
-    "package": {
-      "description": "The direnv package to be wrapped.",
-      "type": "derivation"
     },
     "settings": {
       "description": "Settings to be injected into the wrapped package's `direnv.toml`. See the direnv docs for valid options: {manpage}`direnv.toml(1)`. Disjoint with the `configFile` option.",
@@ -84,10 +62,6 @@
       "description": "Flags to be automatically appended when running discordo.",
       "type": "listOf<string>"
     },
-    "package": {
-      "description": "The discordo package to be wrapped.",
-      "type": "derivation"
-    },
     "settings": {
       "description": "Settings to be injected into the wrapped package's 'config.toml'. See the default configuration for valid options: https://github.com/ayn2op/discordo/blob/main/internal/config/config.toml Disjoint with the `configFile` option.",
       "type": "attrs"
@@ -102,10 +76,6 @@
     "flags": {
       "description": "Flags to be appended by default when running eza.",
       "type": "listOf<string>"
-    },
-    "package": {
-      "description": "The eza package to be wrapped.",
-      "type": "derivation"
     },
     "themeFile": {
       "description": "`theme.yml` file to be injected into the wrapped package. See `https://github.com/eza-community/eza/blob/main/man/eza_colors-explanation.5.md` for valid options Disjoint with the `themeConfig` option.",
@@ -179,14 +149,14 @@
       "description": "Shell initialization code to be automatically injected into the wrapped package. Only ran when Fish is initialized interactively.",
       "mutatorType": "string",
       "type": "string"
-    },
-    "package": {
-      "description": "The Fish package to be wrapped.",
-      "type": "derivation"
     }
   },
 
   "fuzzel": {
+    "_configFlag": {
+      "description": "Implementation detail, please ignore!",
+      "type": "listOf<string>"
+    },
     "configFile": {
       "description": "`fuzzel.ini` file to be injected into the wrapped package. See the documentation for syntax and valid options: https://codeberg.org/dnkl/fuzzel/src/branch/master/doc/fuzzel.ini.5.scd Disjoint with the `settings` option.",
       "type": "pathLike"
@@ -198,10 +168,6 @@
     "logFlags": {
       "description": "Logging related flags to pass to fuzzel when using `settings`/`configFile` See the documentation for valid syntax and formatting of the related flags: https://codeberg.org/dnkl/fuzzel/src/branch/master/doc/fuzzel.1.scd Requires that either `settings`/`configFile` be set.",
       "type": "logFlags"
-    },
-    "package": {
-      "description": "The fuzzel package to be wrapped.",
-      "type": "derivation"
     },
     "settings": {
       "description": "Settings to be injected into the wrapped package's `fuzzel.ini`. See the documentation for valid options: https://codeberg.org/dnkl/fuzzel/src/branch/master/doc/fuzzel.ini.5.scd Disjoint with the `configFile` option.",
@@ -217,10 +183,6 @@
     "hosts": {
       "description": "Host information to be injected into the wrapped package's `hosts.yml`. Disjoint with the `configDir` option.",
       "type": "attrs"
-    },
-    "package": {
-      "description": "The gh package to be wrapped.",
-      "type": "derivation"
     },
     "settings": {
       "description": "Settings to be injected into the wrapped package's `config.yml`. See the documentation: https://cli.github.com/manual/gh_config Disjoint with the `configDir` option.",
@@ -240,10 +202,6 @@
     "ignoredPaths": {
       "description": "Extra path globs to be ignored automatically, along with the repo-specific `.gitignore`. Disjoint with the `ignoreFile` option.",
       "type": "listOf<string>"
-    },
-    "package": {
-      "description": "The git package to be wrapped.",
-      "type": "derivation"
     },
     "settings": {
       "description": "Settings to be injected into the wrapped package's `gitconfig`. See the git documentation for valid options: https://git-scm.com/docs/git-config#_variables Disjoint with the `configFile` option.",

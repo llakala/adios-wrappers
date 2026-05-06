@@ -28,26 +28,22 @@
         Disjoint with the `settings` option.
       '';
     };
-
-    package = {
-      type = types.derivation;
-      description = "The alacritty package to be wrapped.";
-      defaultFunc = { inputs }: inputs.nixpkgs.pkgs.alacritty;
-    };
   };
 
-  impl =
-    { options, inputs }:
-    let
-      generator = inputs.nixpkgs.pkgs.formats.toml {};
-    in
-    assert !(options ? settings && options ? configFile);
-    inputs.mkWrapper {
-      inherit (options) package;
-      preSymlink = ''
-        mkdir -p $out/alacritty
-      '';
-      symlinks = {
+  inputs.mkWrapper.overrides = {
+    package.computedValue = { inputs }: inputs.nixpkgs.pkgs.alacritty;
+    preSymlink.value = ''
+      mkdir -p $out/alacritty
+    '';
+    flags.value = [
+      "--config-file"
+      "$out/alacritty/alacritty.toml"
+    ];
+    symlinks.computedValue =
+      { options, inputs }:
+      let
+        generator = inputs.nixpkgs.pkgs.formats.toml {};
+      in {
         "$out/alacritty/alacritty.toml" =
           if options ? configFile then
             options.configFile
@@ -56,9 +52,10 @@
           else
             null;
       };
-      flags = [
-        "--config-file"
-        "$out/alacritty/alacritty.toml"
-      ];
-    };
+  };
+
+  impl =
+    { options, inputs }:
+    assert !(options ? settings && options ? configFile);
+    inputs.mkWrapper;
 }

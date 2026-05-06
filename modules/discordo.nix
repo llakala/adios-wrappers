@@ -46,26 +46,17 @@
         Flags to be automatically appended when running discordo.
       '';
     };
-
-    package = {
-      type = types.derivation;
-      defaultFunc = { inputs }: inputs.nixpkgs.pkgs.discordo;
-      description = "The discordo package to be wrapped.";
-    };
   };
 
-  impl =
-    { options, inputs }:
-    let
-      generator = inputs.nixpkgs.pkgs.formats.toml {};
-    in
-    assert !(options ? settings && options ? configFile);
-    inputs.mkWrapper {
-      inherit (options) package flags;
-      preSymlink = ''
-        mkdir -p $out/discordo/
-      '';
-      environment = {
+  inputs.mkWrapper.overrides = {
+    package.computedValue = { inputs }: inputs.nixpkgs.pkgs.discordo;
+    flags.computedValue = { options }: options.flags;
+    preSymlink.value = ''
+      mkdir -p $out/discordo/
+    '';
+    environment.computedValue =
+      { options }:
+      {
         XDG_CONFIG_HOME = "$out";
         DISCORDO_TOKEN =
           if options ? tokenFile then
@@ -76,7 +67,11 @@
           else
             null;
       };
-      symlinks = {
+    symlinks.computedValue =
+      { options, inputs }:
+      let
+        generator = inputs.nixpkgs.pkgs.formats.toml {};
+      in {
         "$out/discordo/config.toml" =
           if options ? configFile then
             options.configFile
@@ -85,7 +80,12 @@
           else
             null;
       };
-    };
+  };
+
+  impl =
+    { options, inputs }:
+    assert !(options ? settings && options ? configFile);
+    inputs.mkWrapper {};
 
   meta = {
     maintainers = [ "poacher" ];

@@ -35,11 +35,6 @@
         Disjoint with the `settings` and `hosts` options.
       '';
     };
-    package = {
-      type = types.derivation;
-      description = "The gh package to be wrapped.";
-      defaultFunc = { inputs }: inputs.nixpkgs.pkgs.gh;
-    };
   };
 
   mutations = {
@@ -53,36 +48,40 @@
       };
   };
 
-  impl =
-    { options, inputs }:
-    let
-      inherit (builtins) mapAttrs;
-      generator = inputs.nixpkgs.pkgs.formats.yaml {};
-      mapBools = mapAttrs (
-        _: value:
-        if value == true then
-          "enabled"
-        else if value == false then
-          "disabled"
-        else
-          value
-      );
-    in
-    assert !(options ? configDir && (options ? settings || options ? hosts));
-    if options ? configDir then
-      inputs.mkWrapper {
-        inherit (options) package;
-        environment = {
-          GH_CONFIG_DIR = options.configDir;
-        };
-      }
-    else
-      inputs.mkWrapper {
-        inherit (options) package;
-        preSymlink = ''
+  inputs.mkWrapper.overrides = {
+    package.computedValue = { inputs }: inputs.nixpkgs.pkgs.gh;
+    environment.value = {
+      GH_CONFIG_DIR = "$out/gh";
+    };
+    preSymlink.computedValue =
+      { options }:
+      if options ? configDir then
+        ""
+      else
+        ''
           mkdir -p $out/gh
         '';
-        symlinks = {
+    symlinks.computedValue =
+      { options, inputs }:
+      let
+        inherit (builtins) mapAttrs;
+        generator = inputs.nixpkgs.pkgs.formats.yaml {};
+        mapBools = mapAttrs (
+          _: value:
+          if value == true then
+            "enabled"
+          else if value == false then
+            "disabled"
+          else
+            value
+        );
+      in
+      if options ? configDir then
+        {
+          "$out/gh" = options.configDir;
+        }
+      else
+        {
           "$out/gh/config.yml" =
             if options ? settings then
               generator.generate "config" (mapBools options.settings)
@@ -94,10 +93,12 @@
             else
               null;
         };
-        environment = {
-          GH_CONFIG_DIR = "$out/gh";
-        };
-      };
+  };
+
+  impl =
+    { options, inputs }:
+    assert !(options ? configDir && (options ? settings || options ? hosts));
+    inputs.mkWrapper {};
 
   meta = {
     maintainers = [ "llakala" ];

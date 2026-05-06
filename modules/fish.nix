@@ -155,25 +155,17 @@
           ++ [ options.abbreviations ]
         );
     };
-
-    package = {
-      type = types.derivation;
-      description = "The Fish package to be wrapped.";
-      defaultFunc = { inputs }: inputs.nixpkgs.pkgs.fish;
-    };
   };
 
-  impl =
-    { options, inputs }:
-    let
-      inherit (inputs.nixpkgs.pkgs) writeText;
-      inherit (builtins) listToAttrs attrNames;
-    in
-    assert !(options ? completions && options ? completionsFiles);
-    assert !(options ? functions && options ? functionsFiles);
-    inputs.mkWrapper {
-      inherit (options) package;
-      symlinks = {
+  inputs.mkWrapper.overrides = {
+    package.computedValue = { inputs }: inputs.nixpkgs.pkgs.fish;
+    symlinks.computedValue =
+      { options, inputs }:
+      let
+        inherit (inputs.nixpkgs.pkgs) writeText;
+        inherit (builtins) listToAttrs attrNames;
+      in
+      {
         "$out/share/fish/vendor_conf.d/config.fish" =
           if options ? interactiveShellInit then
             writeText "config.fish" options.interactiveShellInit
@@ -216,7 +208,13 @@
         else
           {}
       );
-    };
+  };
+
+  impl =
+    { options, inputs }:
+    assert !(options ? completions && options ? completionsFiles);
+    assert !(options ? functions && options ? functionsFiles);
+    inputs.mkWrapper {};
 
   meta = {
     maintainers = [ "llakala" ];

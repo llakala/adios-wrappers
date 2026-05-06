@@ -34,27 +34,23 @@
         Disjoint with the `themeConfig` option.
       '';
     };
-
-    package = {
-      type = types.derivation;
-      description = "The eza package to be wrapped.";
-      defaultFunc = { inputs }: inputs.nixpkgs.pkgs.eza;
-    };
   };
 
-  impl =
-    { options, inputs }:
-    let
-      inherit (inputs.nixpkgs.pkgs) writeText;
-      inherit (inputs.nixpkgs.lib.generators) toJSON;
-    in
-    assert !(options ? themeConfig && options ? themeFile);
-    inputs.mkWrapper {
-      inherit (options) package flags;
-      preSymlink = ''
-        mkdir -p $out/eza-config
-      '';
-      symlinks = {
+  inputs.mkWrapper.overrides = {
+    package.computedValue = { inputs }: inputs.nixpkgs.pkgs.eza;
+    flags.computedValue = { options }: options.flags;
+    preSymlink.value = ''
+      mkdir -p $out/eza-config
+    '';
+    environment.value = {
+      EZA_CONFIG_HOME = "$out/eza-config";
+    };
+    symlinks.computedValue =
+      { options, inputs }:
+      let
+        inherit (inputs.nixpkgs.pkgs) writeText;
+        inherit (inputs.nixpkgs.lib.generators) toJSON;
+      in {
         "$out/eza-config/theme.yml" =
           if options ? themeFile then
             options.themeFile
@@ -63,8 +59,10 @@
           else
             null;
       };
-      environment = {
-        EZA_CONFIG_HOME = "$out/eza-config";
-      };
-    };
+  };
+
+  impl =
+    { options, inputs }:
+    assert !(options ? themeConfig && options ? themeFile);
+    inputs.mkWrapper {};
 }

@@ -22,12 +22,10 @@
         Disjoint with the `flags` option.
       '';
     };
+  };
 
-    package = {
-      type = types.derivation;
-      description = "The bat package to be wrapped.";
-      defaultFunc = { inputs }: inputs.nixpkgs.pkgs.bat;
-    };
+  inputs.mkWrapper.overrides = {
+    package.computedValue = { inputs }: inputs.nixpkgs.pkgs.bat;
   };
 
   impl =
@@ -35,11 +33,10 @@
     assert !(options ? flags && options ? configFile);
     if options ? flags then
       inputs.mkWrapper {
-        inherit (options) package flags;
+        inherit (options) flags;
       }
     else if options ? configFile then
       inputs.mkWrapper {
-        inherit (options) package;
         environment = {
           BAT_CONFIG_PATH = options.configFile;
         };

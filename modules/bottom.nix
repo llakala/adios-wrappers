@@ -28,27 +28,22 @@
         Disjoint with the `settings` option.
       '';
     };
-
-    package = {
-      type = types.derivation;
-      description = "The bottom package to be wrapped.";
-      defaultFunc = { inputs }: inputs.nixpkgs.pkgs.bottom;
-    };
   };
 
-  impl =
-    { options, inputs }:
-    let
-      generator = inputs.nixpkgs.pkgs.formats.toml {};
-    in
-    assert !(options ? settings && options ? configFile);
-    inputs.mkWrapper {
-      inherit (options) package;
-      binaryPath = "$out/bin/btm";
-      preSymlink = ''
-        mkdir -p $out/bottom
-      '';
-      symlinks = {
+  inputs.mkWrapper.overrides = {
+    package.computedValue = { inputs }: inputs.nixpkgs.pkgs.bottom;
+    binaryPath.value = "$out/bin/btm";
+    preSymlink.value = ''
+      mkdir -p $out/bottom
+    '';
+    environment.value = {
+      XDG_CONFIG_HOME = "$out";
+    };
+    symlinks.computedValue =
+      { options, inputs }:
+      let
+        generator = inputs.nixpkgs.pkgs.formats.toml {};
+      in {
         "$out/bottom/bottom.toml" =
           if options ? configFile then
             options.configFile
@@ -57,8 +52,10 @@
           else
             null;
       };
-      environment = {
-        XDG_CONFIG_HOME = "$out";
-      };
-    };
+  };
+
+  impl =
+    { options, inputs }:
+    assert !(options ? settings && options ? configFile);
+    inputs.mkWrapper {};
 }

@@ -50,12 +50,6 @@
         Disjoint with the `ignoredPaths` option.
       '';
     };
-
-    package = {
-      type = types.derivation;
-      description = "The git package to be wrapped.";
-      defaultFunc = { inputs }: inputs.nixpkgs.pkgs.git;
-    };
   };
 
   mutations."/starship".wrapperAttrs =
@@ -64,22 +58,22 @@
       environment.XDG_CONFIG_HOME = options {};
     };
 
-  impl =
-    { options, inputs }:
-    let
-      inherit (builtins) concatStringsSep;
-      inherit (inputs.nixpkgs.pkgs) writeText;
-      inherit (inputs.nixpkgs.lib.generators) toGitINI;
-    in
-    assert !(options ? settings && options ? configFile);
-    assert !(options ? ignoredPaths && options ? ignoreFile);
-    inputs.mkWrapper {
-      name = "git"; # Default derivation name is git-with-svn
-      inherit (options) package;
-      preSymlink = ''
-        mkdir -p $out/git
-      '';
-      symlinks = {
+  inputs.mkWrapper.overrides = {
+    name.value = "git"; # Default derivation name is git-with-svn
+    package.computedValue = { inputs }: inputs.nixpkgs.pkgs.git;
+    preSymlink.value = ''
+      mkdir -p $out/git
+    '';
+    environment.value = {
+      XDG_CONFIG_HOME = "$out";
+    };
+    symlinks.computedValue =
+      { options, inputs }:
+      let
+        inherit (builtins) concatStringsSep;
+        inherit (inputs.nixpkgs.pkgs) writeText;
+        inherit (inputs.nixpkgs.lib.generators) toGitINI;
+      in {
         "$out/git/config" =
           if options ? configFile then
             options.configFile
@@ -95,10 +89,13 @@
           else
             null;
       };
-      environment = {
-        XDG_CONFIG_HOME = "$out";
-      };
-    };
+  };
+
+  impl =
+    { options, inputs }:
+    assert !(options ? settings && options ? configFile);
+    assert !(options ? ignoredPaths && options ? ignoreFile);
+    inputs.mkWrapper {};
 
   meta = {
     maintainers = [ "llakala" ];
