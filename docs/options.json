@@ -287,6 +287,21 @@
     }
   },
 
+  "hyfetch": {
+    "configFile": {
+      "description": "`hyfetch.json` file to be injected into the wrapped package. Unwrapped hyfetch configurations can be created via: `hyfetch --config-file hyfetch.json --config` Disjoint with the `settings` option.",
+      "type": "pathLike"
+    },
+    "package": {
+      "description": "The hyfetch package to be wrapped.",
+      "type": "derivation"
+    },
+    "settings": {
+      "description": "Settings to be injected into the wrapped package's `hyfetch.json`. Unwrapped hyfetch configurations can be created via: `hyfetch --config-file hyfetch.json --config` This can then be turned into a nix value: `nix-instantiate --eval -E 'builtins.fromJSON (builtins.readFile ./hyfetch.json)'` Disjoint with the `configFile` option.",
+      "type": "attrs"
+    }
+  },
+
   "irssi": {
     "autoconnect": {
       "description": "The server to be automatically connected to.",
