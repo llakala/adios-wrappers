@@ -44,6 +44,21 @@
     }
   },
 
+  "btop": {
+    "configFile": {
+      "description": "`btop.conf` file to be injected into the wrapped package. See the documentation for syntax and valid options: https://github.com/aristocratos/btop#configurability Disjoint with the `settings` option.",
+      "type": "pathLike"
+    },
+    "package": {
+      "description": "The btop package to be wrapped.",
+      "type": "derivation"
+    },
+    "settings": {
+      "description": "Settings to be injected into the wrapped package's `btop.conf`. See the documentation for valid options: https://github.com/aristocratos/btop#configurability Disjoint with the `configFile` option.",
+      "type": "attrs"
+    }
+  },
+
   "diff-so-fancy": {
     "package": {
       "description": "The diff-so-fancy package to be wrapped.",
