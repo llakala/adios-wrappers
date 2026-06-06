@@ -117,6 +117,21 @@
     }
   },
 
+  "fastfetch": {
+    "configFile": {
+      "description": "`config.jsonc` file to be injected into the wrapped package. See the documentation for syntax and valid options: https://github.com/fastfetch-cli/fastfetch/wiki/Configuration Disjoint with the `settings` option.",
+      "type": "pathLike"
+    },
+    "package": {
+      "description": "The fastfetch package to be wrapped.",
+      "type": "derivation"
+    },
+    "settings": {
+      "description": "Settings to be injected into the wrapped package's `config.jsonc`. See the documentation for valid options: https://github.com/fastfetch-cli/fastfetch/wiki/Configuration Disjoint with the `configFile` option.",
+      "type": "attrs"
+    }
+  },
+
   "firefox": {
     "autoConfigFiles": {
       "description": "`autoconfig.js` files to be injected into the wrapped package. See the Firefox documentation: https://support.mozilla.org/en-US/kb/customizing-firefox-using-autoconfig",
