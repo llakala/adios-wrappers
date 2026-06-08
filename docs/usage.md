@@ -86,7 +86,7 @@ means we can take the existing modules and:
 - Inject our personal configuration with `options.$OPTION_NAME.default`
 - Use computed defaults with `options.$OPTION_NAME.defaultFunc`
 - Specify mutators for an option with `options.$OPTION_NAME.mutators`
-- Add inputs to a module with `inputs.foo.path = "/foo";`
+- Add inputs to a module with `inputs.foo.from = { parent }: parent.foo;`
 
 To use this method, replace the first TODO comment in `wrappers/default.nix`, embedding your config here:
 ```nix
@@ -98,7 +98,7 @@ overrides = {
     options.flags.default = [ "--quit-if-one-screen" ];
   };
   git = {
-    inputs.less.path = "/less";
+    inputs.less.from = { parent }: parent.less;
     options.settings.defaultFunc =
       { options, inputs }:
       {

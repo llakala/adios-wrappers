@@ -1,8 +1,8 @@
 { types, ... }:
 {
   inputs = {
-    mkWrapper.path = "/mkWrapper";
-    nixpkgs.path = "/nixpkgs";
+    mkWrapper.from = { parent }: parent.mkWrapper;
+    nixpkgs.from = { parent }: parent.nixpkgs;
   };
 
   # The reason for there not being RFC42 options like `settings` or `layouts` is

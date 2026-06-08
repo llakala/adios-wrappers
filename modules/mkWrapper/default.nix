@@ -8,7 +8,7 @@ let
     ];
 in {
   inputs = {
-    nixpkgs.path = "/nixpkgs";
+    nixpkgs.from = { parent }: parent.nixpkgs;
   };
 
   options = {

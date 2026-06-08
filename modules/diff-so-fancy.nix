@@ -1,9 +1,9 @@
 { types, ... }:
 {
   inputs = {
-    mkWrapper.path = "/mkWrapper";
-    nixpkgs.path = "/nixpkgs";
-    git.path = "/git";
+    mkWrapper.from = { parent }: parent.mkWrapper;
+    nixpkgs.from = { parent }: parent.nixpkgs;
+    git.from = { parent }: parent.git;
   };
 
   options = {

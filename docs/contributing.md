@@ -21,8 +21,8 @@ Here's an example module that adds both:
 { types, ... }:
 {
   inputs = {
-    nixpkgs.path = "/nixpkgs";
-    mkWrapper.path = "/mkWrapper";
+    nixpkgs.from = { parent }: parent.nixpkgs;
+    mkWrapper.from = { parent }: parent.mkWrapper;
   };
 
   options = {
