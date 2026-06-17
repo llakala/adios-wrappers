@@ -564,6 +564,21 @@
     }
   },
 
+  "satty": {
+    "configFile": {
+      "description": "`config.toml` file to be injected into the wrapped package. See the Satty documentation for syntax and valid options: https://github.com/Satty-org/Satty#configuration-file Disjoint with the `settings` option.",
+      "type": "pathLike"
+    },
+    "package": {
+      "description": "The Satty package to be wrapped.",
+      "type": "derivation"
+    },
+    "settings": {
+      "description": "Settings to be injected into the wrapped package's `config.toml`. See the Satty documentation for valid options: https://github.com/Satty-org/Satty#configuration-file Disjoint with the `configFile` option.",
+      "type": "attrs"
+    }
+  },
+
   "starship": {
     "configFile": {
       "description": "`starship.toml` file to be injected into the wrapped package. See the documentation for valid options: https://starship.rs/config/ Disjoint with the `settings` option.",
