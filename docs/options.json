@@ -883,6 +883,37 @@
     }
   },
 
+  "zathura": {
+    "keybinds": {
+      "description": "Keybindings to be injected into the wrapped package's `zathurarc`. See the zathurarc documentation for the full list of possible mappings: {manpage}`zathurarc(5)`. You can create a mode-specific mapping by specifying the mode before the key: `\"[normal] <C-b>\" = \"scroll left\";`. Disjoint with the `sourceFiles` option.",
+      "example": {
+        "<Right>": "navigate next",
+        "D": "toggle_page_mode",
+        "[fullscreen] <C-i>": "zoom in"
+      },
+      "mutatorType": "attrs",
+      "type": "attrs"
+    },
+    "package": {
+      "description": "The zathura package to be wrapped.",
+      "type": "derivation"
+    },
+    "settings": {
+      "description": "Options to be injected into the wrapped package's `zathurarc`. See the zathurarc documentation for the full list of options: {manpage}`zathurarc(5)`. Disjoint with the `sourceFiles` option.",
+      "example": {
+        "default-bg": "#000000",
+        "default-fg": "#FFFFFF"
+      },
+      "mutatorType": "attrs",
+      "type": "attrs"
+    },
+    "sourceFiles": {
+      "description": "A list of paths to source in the `zathurarc` file. This can be used to import extra files, and can be used with impurity. See the zathurarc documentation for valid options: {manpage}`zathurarc(5)`. Disjoint with `settings` and `keybinds` options.",
+      "mutatorType": "listOf<pathLike>",
+      "type": "listOf<pathLike>"
+    }
+  },
+
   "zellij": {
     "configContents": {
       "description": "Config to be injected into the wrapped package's `config.kdl`. See the documentation for valid options: https://zellij.dev/documentation/configuration.html Disjoint with the `configFile` option.",
