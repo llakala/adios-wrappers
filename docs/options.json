@@ -282,6 +282,21 @@
     }
   },
 
+  "gnupg": {
+    "configFile": {
+      "description": "`gpg.conf` file to be injected into the wrapped package. See the gnupg manual: https://www.gnupg.org/documentation/manuals/gnupg/GPG-Options.html Disjoint with the `settings` option.",
+      "type": "pathLike"
+    },
+    "package": {
+      "description": "The gnupg package to be wrapped.",
+      "type": "derivation"
+    },
+    "settings": {
+      "description": "Settings to be injected into the wrapped package's `gpg.conf`. See the gnupg manual: https://www.gnupg.org/documentation/manuals/gnupg/GPG-Options.html Disjoint with the `configFile` option.",
+      "type": "attrs"
+    }
+  },
+
   "helix": {
     "configFile": {
       "description": "`config.toml` file to be injected into the wrapped package. See the documentation for valid options: https://docs.helix-editor.com/configuration.html Disjoint with the `config` option.",
