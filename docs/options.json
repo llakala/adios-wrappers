@@ -661,6 +661,58 @@
     }
   },
 
+  "ripgrep-all": {
+    "configAdapters": {
+      "description": "Custom adapters to be appended to the wrapped package's `config.jsonc` after the `configContents` option. See the documentation for valid options: https://github.com/phiresky/ripgrep-all/wiki#custom-adapters Disjoint with the `configFile` option.",
+      "example": [
+        {
+          "args": [
+            "-",
+            "-"
+          ],
+          "binary": "pdftotext",
+          "description": "Uses pdftotext (from poppler-utils) to extract plain text from PDF files",
+          "disabled_by_default": false,
+          "extensions": [
+            "pdf"
+          ],
+          "mimetypes": [
+            "application/pdf"
+          ],
+          "name": "poppler",
+          "output_path_hint": "${input_virtual_path}.txt.asciipagebreaks",
+          "version": 1
+        }
+      ],
+      "mutatorType": "listOf<adapter>",
+      "type": "listOf<adapter>"
+    },
+    "configContents": {
+      "description": "Flags to automatically appended when running ripgrep-all set via `config.jsonc`. See the documentation of valid flags: https://github.com/phiresky/ripgrep-all#flags The json schema can be also be accessed via `rga --rga-print-json-schema` for more formatting detail. Custom adapters in `config.jsonc` are set via the `configAdapters` options. Disjoint with the `flags` and `configFile` option.",
+      "type": "attrs"
+    },
+    "configFile": {
+      "description": "`config.jsonc` file to be injected into the wrapped package. See the documentation for syntax and valid options: https://github.com/phiresky/ripgrep-all#flags The json schema can be also be accessed via `rga --rga-print-json-schema` for more formatting detail.",
+      "type": "pathLike"
+    },
+    "flags": {
+      "description": "Flags to be automatically appended when running ripgrep-all. See the documentation of valid flags: https://github.com/phiresky/ripgrep-all#flags Disjoint with the `configContents` and `configFile` option.",
+      "type": "listOf<string>"
+    },
+    "package": {
+      "description": "The ripgrep package to be wrapped.",
+      "type": "derivation"
+    },
+    "rg_configContents": {
+      "description": "`ripgreprc` file, containing flags to be automatically appended to `ripgrep-all`'s invocation of `rg`. See the documentation of valid flags: https://manpages.ubuntu.com/manpages/jammy/man1/rg.1.html#:~:text=OPTIONS This file should have each flag on its own line. See the documentation of the file's format: https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md#configuration-file Disjoint with the `rg_flags` options.",
+      "type": "pathLike"
+    },
+    "rg_flags": {
+      "description": "Flags to be automatically appended to `ripgrep-all`'s invocation of `rg`. See the documentation of valid flags: https://manpages.ubuntu.com/manpages/jammy/man1/rg.1.html#:~:text=OPTIONS Disjoint with the `rg_configContents` option.",
+      "type": "listOf<string>"
+    }
+  },
+
   "satty": {
     "configFile": {
       "description": "`config.toml` file to be injected into the wrapped package. See the Satty documentation for syntax and valid options: https://github.com/Satty-org/Satty#configuration-file Disjoint with the `settings` option.",
