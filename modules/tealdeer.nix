@@ -45,7 +45,6 @@
     assert !(options ? settings && options ? configFile);
     inputs.mkWrapper {
       inherit (options) package;
-      binaryPath = "$out/bin/tldr";
       symlinks = {
         "$out/tealdeer-config/config.toml" =
           if options ? configFile then

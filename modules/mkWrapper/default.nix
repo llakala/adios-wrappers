@@ -17,7 +17,7 @@ in {
       description = ''
         The name of the package to be wrapped.
 
-        This determines the pname of the wrapped package, as well as the derivation to be automatically run when using `nix run`.
+        This determines the pname of the wrapped package.
       '';
     };
     extraPaths = {
@@ -25,10 +25,23 @@ in {
       description = "Extra derivations which should have their directory structures replicated in the final package.";
       default = [];
     };
+    binaryName = {
+      type = types.string;
+      description = ''
+        The name of the binary to be wrapped.
+
+        This sets the `meta.mainProgram` of the wrapped package, and the default `binaryPath` to wrap with.
+      '';
+      defaultFunc = { options }: options.package.meta.mainProgram or options.name;
+    };
     binaryPath = {
       type = types.string;
-      defaultFunc = { options }: "$out/bin/${options.name}";
-      description = "Path within the input derivation to the binary which should be wrapped.";
+      defaultFunc = { options }: "$out/bin/${options.binaryName}";
+      description = ''
+        The path of the binary within the input derivation to be wrapped.
+
+        This should only be set if the binary isn't inside $out/bin. If it is, `binaryName` can be used instead.
+      '';
     };
     preWrap = {
       type = nullOrString;
@@ -127,7 +140,7 @@ in {
           [ "${options.package}" ]
         else
           map (path: "${path}") ([ options.package ] ++ options.extraPaths);
-      meta.mainProgram = options.name;
+      meta.mainProgram = options.binaryName;
       passthru = options.package.passthru or {};
 
       preferLocalBuild = true;

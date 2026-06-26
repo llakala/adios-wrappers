@@ -44,12 +44,10 @@
     assert !(options ? flags && options ? configFile);
     if options ? flags then
       inputs.mkWrapper {
-        name = "rg";
         inherit (options) package flags;
       }
     else
       inputs.mkWrapper {
-        name = "rg";
         environment = {
           RIPGREP_CONFIG_PATH = options.configFile or null;
         };

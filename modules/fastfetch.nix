@@ -45,7 +45,6 @@
     in
     assert !(options ? settings && options ? configFile);
     inputs.mkWrapper {
-      name = "fastfetch"; # Needs to be hard coded for users of fastfetch-unwrapped
       inherit (options) package;
       symlinks = {
         "$out/fastfetch/config.jsonc" =

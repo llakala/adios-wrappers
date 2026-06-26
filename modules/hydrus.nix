@@ -47,7 +47,7 @@
     in
     inputs.mkWrapper {
       inherit (options) package;
-      binaryPath = "$out/bin/hydrus-client";
+      binaryName = "hydrus-client";
       flags = if options ? clientFlags then options.clientFlags else [];
       postWrap =
         if options ? serverFlags then

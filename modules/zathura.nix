@@ -93,7 +93,6 @@
     in
     assert !(options ? sourceFiles && (options ? settings || options ? keybinds));
     inputs.mkWrapper {
-      name = "zathura";
       inherit (options) package;
       symlinks = {
         "$out/zathura/zathurarc" = writeText "zathurarc" assembledConfig;

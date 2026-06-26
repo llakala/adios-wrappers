@@ -96,7 +96,6 @@
     assert !(options ? settings && options ? configFile);
     assert !(options ? keybinds && options ? keybindsFile);
     inputs.mkWrapper {
-      name = "mpv"; # Needs to be hard coded for users of mpv-with-scripts
       inherit (options) package;
       symlinks = {
         "$out/mpv/mpv.conf" =

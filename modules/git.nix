@@ -74,7 +74,6 @@
     assert !(options ? settings && options ? configFile);
     assert !(options ? ignoredPaths && options ? ignoreFile);
     inputs.mkWrapper {
-      name = "git"; # Default derivation name is git-with-svn
       inherit (options) package;
       symlinks = {
         "$out/git/config" =

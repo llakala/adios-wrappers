@@ -51,7 +51,6 @@
     in
     assert !(options ? settings && options ? configFile);
     inputs.mkWrapper {
-      name = "gpg";
       inherit (options) package;
       symlinks = {
         "$out/gnupg/gpg.conf" =

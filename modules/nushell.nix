@@ -67,7 +67,6 @@
     in
     assert !(options ? shellInit && options ? configFile);
     inputs.mkWrapper {
-      name = "nu";
       inherit (options) package;
       wrapperArgs =
         if options ? extraPackages then "--prefix PATH : ${makeBinPath options.extraPackages}" else null;

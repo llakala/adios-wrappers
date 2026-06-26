@@ -45,7 +45,6 @@
     assert !(options ? settings && options ? configFile);
     inputs.mkWrapper {
       inherit (options) package;
-      binaryPath = "$out/bin/btm";
       symlinks = {
         "$out/bottom/bottom.toml" =
           if options ? configFile then

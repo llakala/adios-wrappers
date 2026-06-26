@@ -85,7 +85,6 @@
     assert !(options ? autostartContents && options ? autostartFile);
     inputs.mkWrapper {
       inherit (options) package;
-      name = "mango";
       symlinks = {
         "$out/mango/config.conf" =
           if options ? configFile then
