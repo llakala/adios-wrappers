@@ -570,13 +570,13 @@
       "description": "Flags to be automatically appended to the wrapped program.",
       "type": "listOf<string>"
     },
-    "name": {
-      "description": "The name of the package to be wrapped. This determines the pname of the wrapped package.",
-      "type": "string"
-    },
     "package": {
       "description": "The package to be wrapped.",
       "type": "derivation"
+    },
+    "pname": {
+      "description": "The name of the package to be wrapped.",
+      "type": "string"
     },
     "postWrap": {
       "default": null,

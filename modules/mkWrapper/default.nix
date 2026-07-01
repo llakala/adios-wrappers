@@ -11,13 +11,11 @@ in {
       type = types.derivation;
       description = "The package to be wrapped.";
     };
-    name = {
+    pname = {
       type = types.string;
       defaultFunc = { options }: options.package.pname;
       description = ''
         The name of the package to be wrapped.
-
-        This determines the pname of the wrapped package.
       '';
     };
     extraPaths = {
@@ -32,7 +30,7 @@ in {
 
         This sets the `meta.mainProgram` of the wrapped package, and the default `binaryPath` to wrap with.
       '';
-      defaultFunc = { options }: options.package.meta.mainProgram or options.name;
+      defaultFunc = { options }: options.package.meta.mainProgram or options.pname;
     };
     binaryPath = {
       type = types.string;
@@ -133,7 +131,7 @@ in {
       flagsStr = concatStringsSep " " (map (flag: "--add-flag \"${flag}\"") options.flags);
     in
     stdenvNoCC.mkDerivation {
-      name = "${options.name}-wrapped";
+      name = "${options.pname}-wrapped";
       buildInputs = [ makeBinaryWrapper ];
       paths =
         if options.extraPaths == [] then
