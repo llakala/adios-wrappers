@@ -113,6 +113,9 @@
           else
             null;
       };
+      postWrap = ''
+        wrapProgram $out/bin/umpv --set 'MPV' $out/bin/mpv
+      '';
       environment = {
         XDG_CONFIG_HOME = "$out";
       };
