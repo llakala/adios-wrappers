@@ -614,8 +614,12 @@
       "type": "pathLike"
     },
     "package": {
-      "description": "The mpv package to be wrapped.",
+      "description": "The mpv package to be wrapped. Note that this should use a `-unwrapped` variant.",
       "type": "derivation"
+    },
+    "scripts": {
+      "description": "Scripts to be added to the wrapped package. Packaged scripts from nixpkgs can be found in `mpvScripts`.",
+      "type": "listOf<derivation>"
     },
     "settings": {
       "description": "Settings to be injected into the wrapped package's `mpv.conf`. See the manual for valid options: https://mpv.io/manual/stable/ Disjoint with the `configFile` option.",

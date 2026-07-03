@@ -1,11 +1,18 @@
 { types, ... }:
 {
   inputs = {
-    mkWrapper.from = { parent }: parent.mkWrapper;
     nixpkgs.from = { parent }: parent.nixpkgs;
   };
 
   options = {
+    scripts = {
+      type = types.listOf types.derivation;
+      description = ''
+        Scripts to be added to the wrapped package.
+        Packaged scripts from nixpkgs can be found in `mpvScripts`.
+      '';
+    };
+
     settings = {
       type = types.attrs;
       description = ''
@@ -55,15 +62,18 @@
     package = {
       type = types.derivation;
       defaultFunc = { inputs }: inputs.nixpkgs.pkgs.mpv-unwrapped;
-      description = "The mpv package to be wrapped.";
+      description = ''
+        The mpv package to be wrapped.
+        Note that this should use a `-unwrapped` variant.
+      '';
     };
   };
 
   impl =
     { options, inputs }:
     let
-      inherit (inputs.nixpkgs.pkgs) writeText;
-      inherit (inputs.nixpkgs.lib) generators concatStringsSep mapAttrsToList;
+      inherit (inputs.nixpkgs.pkgs) writeText mpv;
+      inherit (inputs.nixpkgs.lib) generators concatStringsSep mapAttrsToList optionalString;
       inherit (builtins) typeOf stringLength;
 
       # Most of this copied from https://github.com/nix-community/home-manager/blob/master/modules/programs/mpv.nix
@@ -92,30 +102,39 @@
 
       renderKeybinds =
         keybinds: concatStringsSep "\n" (mapAttrsToList (name: value: "${name} ${value}") keybinds);
+
+      configFile =
+        if options ? configFile then
+          options.configFile
+        else if options ? settings then
+          writeText "mpv.conf" (renderOptions options.settings)
+        else
+          null;
+      keybindsFile =
+        if options ? keybindsFile then
+          options.keybindsFile
+        else if options ? keybinds then
+          writeText "input.conf" (renderKeybinds options.keybinds)
+        else
+          null;
     in
     assert !(options ? settings && options ? configFile);
     assert !(options ? keybinds && options ? keybindsFile);
-    inputs.mkWrapper {
-      inherit (options) package;
-      symlinks = {
-        "$out/mpv/mpv.conf" =
-          if options ? configFile then
-            options.configFile
-          else if options ? settings then
-            writeText "mpv.conf" (renderOptions options.settings)
-          else
-            null;
-        "$out/mpv/input.conf" =
-          if options ? keybindsFile then
-            options.keybindsFile
-          else if options ? keybinds then
-            writeText "input.conf" (renderKeybinds options.keybinds)
-          else
-            null;
-      };
-      environment = {
-        XDG_CONFIG_HOME = "$out";
-      };
+    # We use the nixpkgs wrapper and not `mkWrapper` for a couple of reasons:
+    # - The double wrapping would make `umpv` not work if wrapping their wrapper
+    # - Wrapping with `mkWrapper` first and then the nixpkgs wrapper is surprisingly annoying
+    # - Copying over the entire nixpkgs wrapper would increase the maintaince burden here
+    mpv.override {
+      mpv-unwrapped = options.package;
+      scripts = options.scripts or [];
+      extraMakeWrapperArgs = [
+        "--add-flags"
+        (
+          "--no-config"
+          + optionalString (configFile != null) " --include=${configFile}"
+          + optionalString (keybindsFile != null) " --input-conf=${keybindsFile}"
+        )
+      ];
     };
 
   meta = {
