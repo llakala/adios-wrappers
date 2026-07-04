@@ -3,14 +3,13 @@
   pkgs ? import sources.nixpkgs {},
 }:
 let
-  inherit (pkgs) lib;
   adios = import "${sources.adios}/adios";
   adios-wrappers = import sources.adios-wrappers { inherit adios; };
 
   root = {
     modules = adios.lib.inject [
       adios-wrappers
-      (adios.lib.importModules ./wrappers)
+      (adios.lib.importModules { directory = ./wrappers; })
     ];
   };
 

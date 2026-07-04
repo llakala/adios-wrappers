@@ -3,7 +3,7 @@ let
   root = {
     modules = adios.lib.inject [
       adios-wrappers
-      (adios.lib.importModules ./wrappers)
+      (adios.lib.importModules { directory = ./wrappers; })
     ];
   };
 
