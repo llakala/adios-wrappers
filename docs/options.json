@@ -29,6 +29,21 @@
     }
   },
 
+  "bluetui": {
+    "configFile": {
+      "description": "`config.toml` file to be injected into the wrapped package. See the documentation for syntax and valid options: https://github.com/pythops/bluetui#config Disjoint with the `settings` option.",
+      "type": "pathLike"
+    },
+    "package": {
+      "description": "The bluetui package to be wrapped.",
+      "type": "derivation"
+    },
+    "settings": {
+      "description": "Settings to be injected into the wrapped package's `config.toml`. See the documentation for valid options: https://github.com/pythops/bluetui#config Disjoint with the `configFile` option.",
+      "type": "attrs"
+    }
+  },
+
   "bottom": {
     "configFile": {
       "description": "`bottom.toml` file to be injected into the wrapped package. See the bottom documentation for valid options: https://bottom.pages.dev/nightly/configuration/config-file/ Disjoint with the `settings` option.",
