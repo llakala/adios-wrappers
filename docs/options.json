@@ -661,6 +661,46 @@
     }
   },
 
+  "ripgrep-all": {
+    "adapters": {
+      "description": "Custom adapters to be appended to the wrapped package's `config.jsonc` after the `configContents` option. See the documentation for valid options: https://github.com/phiresky/ripgrep-all/wiki#custom-adapters Disjoint with the `configFile` option.",
+      "example": [
+        {
+          "args": [
+            "-",
+            "-"
+          ],
+          "binary": "pdftotext",
+          "description": "Uses pdftotext (from poppler-utils) to extract plain text from PDF files",
+          "disabled_by_default": false,
+          "extensions": [
+            "pdf"
+          ],
+          "mimetypes": [
+            "application/pdf"
+          ],
+          "name": "poppler",
+          "output_path_hint": "${input_virtual_path}.txt.asciipagebreaks",
+          "version": 1
+        }
+      ],
+      "mutatorType": "listOf<attrs>",
+      "type": "listOf<attrs>"
+    },
+    "configFile": {
+      "description": "`config.jsonc` file to be injected into the wrapped package. See the documentation for syntax and valid options: https://github.com/phiresky/ripgrep-all#flags The json schema can be also be accessed via `rga --rga-print-json-schema` for more formatting detail. Disjoint with the `flags` and `adapters` option.",
+      "type": "pathLike"
+    },
+    "flags": {
+      "description": "Flags to be automatically appended when running ripgrep-all. See the documentation of valid flags: https://github.com/phiresky/ripgrep-all#flags Disjoint with the `configFile` option.",
+      "type": "listOf<string>"
+    },
+    "package": {
+      "description": "The `ripgrep-all` package to be wrapped. As `ripgrep-all` makes use of the `ripgrep` package (also available in adios-wrappers), you can change the ripgrep package to your own via an injection. Overrides can be accomplished in adios-wrappers in the following manner: 1. Add the `ripgrep` wrapper to the module inputs: `inputs.ripgrep.from = { parent }: parent.ripgrep;` 2. Set the package option to an overriden `ripgrep-all` package with the previously used input: `options.package.defaultFunc = { inputs }: inputs.nixpkgs.ripgrep-all.override { ripgrep = inputs.ripgrep; };`",
+      "type": "derivation"
+    }
+  },
+
   "satty": {
     "configFile": {
       "description": "`config.toml` file to be injected into the wrapped package. See the Satty documentation for syntax and valid options: https://github.com/Satty-org/Satty#configuration-file Disjoint with the `settings` option.",
