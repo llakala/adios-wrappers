@@ -368,6 +368,29 @@
     }
   },
 
+  "hayabusa": {
+    "configFile": {
+      "description": "`config.toml` file to be injected into the wrapped package. See the documentation for syntax and valid options: https://github.com/Notarin/hayabusa/blob/main/CONFIGURATION.md Disjoint with the `settings` option.",
+      "type": "pathLike"
+    },
+    "luaContents": {
+      "description": "Lua code to be injected into the wrapped package's `config.lua`. See the default lua file for a general idea of expected contents and formatting.   https://github.com/Notarin/hayabusa/blob/main/src/config/default.lua Disjoint with the `luaFile` option.",
+      "type": "string"
+    },
+    "luaFile": {
+      "description": "`config.lua` file to be injected into the wrapped package. See the default lua file for a general idea of expected contents and formatting.   https://github.com/Notarin/hayabusa/blob/main/src/config/default.lua Disjoint with the `luaContents` option.",
+      "type": "pathLike"
+    },
+    "package": {
+      "description": "The hayabusa package to be wrapped",
+      "type": "derivation"
+    },
+    "settings": {
+      "description": "Settings to be injected into the wrapped package's `config.toml`. See the documentation for syntax and valid options: https://github.com/Notarin/hayabusa/blob/main/CONFIGURATION.md Disjoint with the `configFile` option.",
+      "type": "attrs"
+    }
+  },
+
   "helix": {
     "configFile": {
       "description": "`config.toml` file to be injected into the wrapped package. See the documentation for valid options: https://docs.helix-editor.com/configuration.html Disjoint with the `config` option.",
