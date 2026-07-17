@@ -9,6 +9,7 @@ in {
     packages = [
       nixfmt
       pkgs.npins
+      pkgs.nodejs
     ];
   };
 }
