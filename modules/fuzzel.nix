@@ -128,7 +128,6 @@
     );
     assert !(options ? settings && options ? configFile);
     inputs.mkWrapper {
-      name = "fuzzel";
       inherit (options) package;
       inherit flags;
       preWrap =

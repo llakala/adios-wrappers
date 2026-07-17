@@ -54,7 +54,7 @@
 
     package = {
       type = types.derivation;
-      defaultFunc = { inputs }: inputs.nixpkgs.pkgs.mangowc;
+      defaultFunc = { inputs }: inputs.nixpkgs.pkgs.mango;
       description = "The mangowc package to be wrapped.";
     };
   };
@@ -85,7 +85,6 @@
     assert !(options ? autostartContents && options ? autostartFile);
     inputs.mkWrapper {
       inherit (options) package;
-      name = "mango";
       symlinks = {
         "$out/mango/config.conf" =
           if options ? configFile then

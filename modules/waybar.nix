@@ -96,7 +96,6 @@
     assert !(options ? settings && options ? configFile);
     assert !(options ? barStyle && options ? cssFile);
     inputs.mkWrapper {
-      name = "waybar";
       inherit (options) package;
       flags = configFlag ++ styleFlag;
       environment = {

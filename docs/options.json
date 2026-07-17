@@ -29,6 +29,21 @@
     }
   },
 
+  "bluetui": {
+    "configFile": {
+      "description": "`config.toml` file to be injected into the wrapped package. See the documentation for syntax and valid options: https://github.com/pythops/bluetui#config Disjoint with the `settings` option.",
+      "type": "pathLike"
+    },
+    "package": {
+      "description": "The bluetui package to be wrapped.",
+      "type": "derivation"
+    },
+    "settings": {
+      "description": "Settings to be injected into the wrapped package's `config.toml`. See the documentation for valid options: https://github.com/pythops/bluetui#config Disjoint with the `configFile` option.",
+      "type": "attrs"
+    }
+  },
+
   "bottom": {
     "configFile": {
       "description": "`bottom.toml` file to be injected into the wrapped package. See the bottom documentation for valid options: https://bottom.pages.dev/nightly/configuration/config-file/ Disjoint with the `settings` option.",
@@ -368,6 +383,29 @@
     }
   },
 
+  "hayabusa": {
+    "configFile": {
+      "description": "`config.toml` file to be injected into the wrapped package. See the documentation for syntax and valid options: https://github.com/Notarin/hayabusa/blob/main/CONFIGURATION.md Disjoint with the `settings` option.",
+      "type": "pathLike"
+    },
+    "luaContents": {
+      "description": "Lua code to be injected into the wrapped package's `config.lua`. See the default lua file for a general idea of expected contents and formatting.   https://github.com/Notarin/hayabusa/blob/main/src/config/default.lua Disjoint with the `luaFile` option.",
+      "type": "string"
+    },
+    "luaFile": {
+      "description": "`config.lua` file to be injected into the wrapped package. See the default lua file for a general idea of expected contents and formatting.   https://github.com/Notarin/hayabusa/blob/main/src/config/default.lua Disjoint with the `luaContents` option.",
+      "type": "pathLike"
+    },
+    "package": {
+      "description": "The hayabusa package to be wrapped",
+      "type": "derivation"
+    },
+    "settings": {
+      "description": "Settings to be injected into the wrapped package's `config.toml`. See the documentation for syntax and valid options: https://github.com/Notarin/hayabusa/blob/main/CONFIGURATION.md Disjoint with the `configFile` option.",
+      "type": "attrs"
+    }
+  },
+
   "helix": {
     "configFile": {
       "description": "`config.toml` file to be injected into the wrapped package. See the documentation for valid options: https://docs.helix-editor.com/configuration.html Disjoint with the `config` option.",
@@ -547,13 +585,17 @@
   },
 
   "mkWrapper": {
+    "binaryName": {
+      "description": "The name of the binary to be wrapped. This sets the `meta.mainProgram` of the wrapped package, and the default `binaryPath` to wrap with.",
+      "type": "string"
+    },
     "binaryPath": {
-      "description": "Path within the input derivation to the binary which should be wrapped",
+      "description": "The path of the binary within the input derivation to be wrapped. This should only be set if the binary isn't inside $out/bin. If it is, `binaryName` can be used instead.",
       "type": "string"
     },
     "environment": {
       "default": {},
-      "description": "Environment variables to be set during the execution of the wrapped program",
+      "description": "Environment variables to be set during the execution of the wrapped program.",
       "type": "attrsOf<union<null,pathLike,readFromFileAtRuntime>>"
     },
     "extraPaths": {
@@ -566,13 +608,13 @@
       "description": "Flags to be automatically appended to the wrapped program.",
       "type": "listOf<string>"
     },
-    "name": {
-      "description": "The name of the package to be wrapped. This determines the pname of the wrapped package, as well as the derivation to be automatically run when using `nix run`.",
-      "type": "string"
-    },
     "package": {
       "description": "The package to be wrapped.",
       "type": "derivation"
+    },
+    "pname": {
+      "description": "The name of the package to be wrapped.",
+      "type": "string"
     },
     "postWrap": {
       "default": null,
@@ -610,8 +652,12 @@
       "type": "pathLike"
     },
     "package": {
-      "description": "The mpv package to be wrapped.",
+      "description": "The mpv package to be wrapped. Note that this should use a `-unwrapped` variant.",
       "type": "derivation"
+    },
+    "scripts": {
+      "description": "Scripts to be added to the wrapped package. Packaged scripts from nixpkgs can be found in `mpvScripts`.",
+      "type": "listOf<derivation>"
     },
     "settings": {
       "description": "Settings to be injected into the wrapped package's `mpv.conf`. See the manual for valid options: https://mpv.io/manual/stable/ Disjoint with the `configFile` option.",

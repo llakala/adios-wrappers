@@ -115,7 +115,6 @@
     assert !(options ? languages && options ? languagesFile);
     inputs.mkWrapper {
       inherit (options) package;
-      binaryPath = "$out/bin/hx";
       symlinks = {
         "$out/helix/config.toml" =
           if options ? configFile then

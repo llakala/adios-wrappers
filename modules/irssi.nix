@@ -86,7 +86,6 @@
     in
     assert !(options ? configDir && options ? config);
     inputs.mkWrapper {
-      name = "irssi";
       inherit (options) package;
       symlinks = {
         "$out/irssi/config" = if options ? config then writeText "config" options.config else null;

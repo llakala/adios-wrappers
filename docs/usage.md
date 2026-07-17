@@ -51,9 +51,9 @@ each option. What if you wanted to:
 
 To accomplish these things, we can _inject_ our config into the module definitions themselves.
 
-# What is `lib.recursiveUpdate`?
+# What are injections?
 
-`lib.recursiveUpdate` can be thought of as "recursive `//`". Here's an example of how it works:
+Injections, performed via `adios.lib.inject`, can be thought of as "recursive `//`". Here's an example of how they work:
 
 ```nix
 let
@@ -73,7 +73,10 @@ let
     };
   }
 
-  final = lib.recursiveUpdate base injections;
+  final = adios.lib.inject [
+    base
+    injections
+  ];
 in
 # returns true
 final == {
@@ -85,9 +88,9 @@ final == {
 }
 ```
 
-As you can see, the injections are able to "update" the left attrset, with the right attrset taking priority on a key
-collision. This combines well with a property of Adios modules - they can be accessed as attrsets without any
-knowledge of their final args. Here's an example of how `recursiveUpdate` can be used to modify an Adios module:
+As you can see, the injections are able to "update" the first attrset, with the second attrset taking priority on a key
+collision. This combines well with a property of Adios modules - they can be accessed as attrsets without any knowledge
+of their final args. Here's an example of how `inject` can be used to modify an Adios module:
 
 ```nix
 { adios }:
@@ -121,7 +124,10 @@ let
     };
   };
 
-  final = lib.recursiveUpdate module injections;
+  final = adios.lib.inject [
+    module
+    injections
+  ];
 in
 # returns true
 (final {}) == ''
@@ -130,7 +136,7 @@ in
 ''
 ```
 
-We can now use `recursiveUpdate` to inject virtually anything into the `adios-wrapeprs` module definitions. There's only
+We can now use inject virtually anything into the `adios-wrapeprs` module definitions. There's only
 one more step to go before we're able to start defining wrappers.
 
 # What is `adios.lib.importModules`?
@@ -159,7 +165,10 @@ let
   };
 
   root = {
-    modules = lib.recursiveUpdate adios-wrappers injections;
+    modules = adios.lib.inject [
+      adios-wrappers
+      injections
+    ];
   };
 ```
 
@@ -171,16 +180,21 @@ let
   # ...
 
   root = {
-    modules = lib.recursiveUpdate adios-wrappers (adios.lib.importModules ./wrappers);
+    modules = adios.lib.inject [
+      adios-wrappers
+      (adios.lib.importModules { directory = ./wrappers; })
+    ];
   };
 ```
 
-Then, each of the injections can be moved into its own file under `./wrappers`:
+Then, each of the injections can be moved into its own file under `./wrappers`. Here's a demo of what the contents might
+look like:
 
 ```nix
 # wrappers/less.nix
 _:
 {
+  # adding a value for the flags option, which previously had no default
   options.flags.default = [ "--quit-if-one-screen" ];
 }
 ```
@@ -189,24 +203,19 @@ _:
 # wrappers/git.nix
 _:
 {
+  # adding our less module as an input, so it can be used in settings
   inputs.less.from = { parent }: parent.less;
 
+  # using a defaultFunc instead of a default, so we can read from inputs
   options.settings.defaultFunc =
     { options, inputs }:
     {
-      core.pager = inputs.nixpkgs.lib.getExe (options { });
+      user = {
+        name = "Your Name";
+        email = "your.email@host.provider";
+      };
+      # calling the less module with {} to get its final derivation
+      core.pager = inputs.nixpkgs.lib.getExe (inputs.less {});
     };
-
-  mutations."/fish".abbreviations = _: {
-    gs = "git status";
-  };
-}
-```
-
-```nix
-# wrappers/fish.nix
-_:
-{
-  options.abbreviations.mutators = [ "/git" ];
 }
 ```

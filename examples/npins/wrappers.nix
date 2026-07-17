@@ -3,13 +3,16 @@
   pkgs ? import sources.nixpkgs {},
 }:
 let
-  inherit (pkgs) lib;
   adios = import "${sources.adios}/adios";
   adios-wrappers = import sources.adios-wrappers { inherit adios; };
 
   root = {
-    name = "root";
-    modules = lib.recursiveUpdate adios-wrappers (adios.lib.importModules ./wrappers);
+    modules = adios.lib.inject [
+      adios-wrappers
+      # wrappers dir doesn't exist yet - add that yourself with your own
+      # injections (see the usage docs)
+      (adios.lib.importModules { directory = ./wrappers; })
+    ];
   };
 
   tree = adios root {
@@ -20,6 +23,5 @@ let
     };
   };
 in
-# call each wrapper with empty args to get its output, since config was set
-# through recursiveUpdate injections
+# call each wrapper with empty args to get its output
 builtins.mapAttrs (_: module: module {}) tree.modules

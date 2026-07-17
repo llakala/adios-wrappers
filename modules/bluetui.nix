@@ -9,10 +9,10 @@
     settings = {
       type = types.attrs;
       description = ''
-        Settings to be injected into the wrapped package's `bottom.toml`.
+        Settings to be injected into the wrapped package's `config.toml`.
 
-        See the bottom documentation for valid options:
-        https://bottom.pages.dev/nightly/configuration/config-file/
+        See the documentation for valid options:
+        https://github.com/pythops/bluetui#config
 
         Disjoint with the `configFile` option.
       '';
@@ -20,10 +20,10 @@
     configFile = {
       type = types.pathLike;
       description = ''
-        `bottom.toml` file to be injected into the wrapped package.
+        `config.toml` file to be injected into the wrapped package.
 
-        See the bottom documentation for valid options:
-        https://bottom.pages.dev/nightly/configuration/config-file/
+        See the documentation for syntax and valid options:
+        https://github.com/pythops/bluetui#config
 
         Disjoint with the `settings` option.
       '';
@@ -31,26 +31,26 @@
 
     package = {
       type = types.derivation;
-      defaultFunc = { inputs }: inputs.nixpkgs.pkgs.bottom;
-      description = "The bottom package to be wrapped.";
+      defaultFunc = { inputs }: inputs.nixpkgs.pkgs.bluetui;
+      description = "The bluetui package to be wrapped.";
     };
   };
 
   impl =
     { options, inputs }:
     let
-      inherit (inputs.nixpkgs.pkgs) formats;
-      generator = formats.toml {};
+      inherit (inputs.nixpkgs) pkgs;
+      generator = pkgs.formats.toml {};
     in
     assert !(options ? settings && options ? configFile);
     inputs.mkWrapper {
       inherit (options) package;
       symlinks = {
-        "$out/bottom/bottom.toml" =
+        "$out/bluetui/config.toml" =
           if options ? configFile then
             options.configFile
           else if options ? settings then
-            generator.generate "bottom.toml" options.settings
+            generator.generate "config.toml" options.settings
           else
             null;
       };
@@ -58,4 +58,8 @@
         XDG_CONFIG_HOME = "$out";
       };
     };
+
+  meta = {
+    maintainers = [ "mango" ];
+  };
 }
