@@ -20,6 +20,10 @@ jobs:
     steps:
       - name: Checkout your repository using git
         uses: actions/checkout@v7
+      - name: Install nix for content syncing
+        uses: cachix/install-nix-action@v31
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
       - name: Install, build, and upload your site
         uses: withastro/action@v6
         with:
