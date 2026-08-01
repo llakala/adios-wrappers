@@ -46,7 +46,7 @@
     let
       inherit (builtins) concatStringsSep;
     in
-    assert !(options ? flags && options ? configFile);
+    assert options ? flags != options ? configFile;
     inputs.mkWrapper {
       inherit (options) package;
       environment = {

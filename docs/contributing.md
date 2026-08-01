@@ -87,16 +87,14 @@ Here's an example module that adds both:
       inherit (inputs.nixpkgs.pkgs) formats;
       generator = formats.toml {};
     in
-    assert !(options ? settings && options ? configFile);
+    assert options ? settings != options ? configFile;
     inputs.mkWrapper {
       symlinks = {
         "$out/foo/foo.toml" =
           if options ? configFile then
             options.configFile
-          else if options ? settings then
-            generator.generate "$out/foo/foo.toml" options.settings
           else
-            null;
+            generator.generate "$out/foo/foo.toml" options.settings;
       };
       environment = {
         FOO_CONFIG_FILE = "$out/foo/foo.toml";

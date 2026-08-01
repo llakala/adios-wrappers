@@ -40,7 +40,7 @@
     { options, inputs }:
     let
       inherit (inputs.nixpkgs.pkgs) writeText;
-      inherit (inputs.nixpkgs.lib) generators isString optionals optionalString;
+      inherit (inputs.nixpkgs.lib) generators isString optionalString;
       # Copied from https://github.com/nix-community/home-manager/blob/master/modules/programs/gpg.nix#L19-L25
       toKeyValue =
         settings:
@@ -49,19 +49,17 @@
           listsAsDuplicateKeys = true;
         } settings;
     in
-    assert !(options ? settings && options ? configFile);
+    assert options ? settings != options ? configFile;
     inputs.mkWrapper {
       inherit (options) package;
       symlinks = {
         "$out/gnupg/gpg.conf" =
           if options ? configFile then
             options.configFile
-          else if options ? settings then
-            writeText "gpg.conf" (toKeyValue options.settings)
           else
-            null;
+            writeText "gpg.conf" (toKeyValue options.settings);
       };
-      flags = optionals (options ? configFile || options ? settings) [
+      flags = [
         "--options"
         "$out/gnupg/gpg.conf"
       ];

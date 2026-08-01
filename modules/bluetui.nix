@@ -42,17 +42,15 @@
       inherit (inputs.nixpkgs) pkgs;
       generator = pkgs.formats.toml {};
     in
-    assert !(options ? settings && options ? configFile);
+    assert options ? settings != options ? configFile;
     inputs.mkWrapper {
       inherit (options) package;
       symlinks = {
         "$out/bluetui/config.toml" =
           if options ? configFile then
             options.configFile
-          else if options ? settings then
-            generator.generate "config.toml" options.settings
           else
-            null;
+            generator.generate "config.toml" options.settings;
       };
       environment = {
         XDG_CONFIG_HOME = "$out";

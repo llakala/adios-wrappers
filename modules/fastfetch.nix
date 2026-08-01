@@ -40,22 +40,19 @@
     { options, inputs }:
     let
       inherit (inputs.nixpkgs.pkgs) formats;
-      inherit (inputs.nixpkgs.lib) optionals;
       generator = formats.json {};
     in
-    assert !(options ? settings && options ? configFile);
+    assert options ? settings != options ? configFile;
     inputs.mkWrapper {
       inherit (options) package;
       symlinks = {
         "$out/fastfetch/config.jsonc" =
           if options ? configFile then
             options.configFile
-          else if options ? settings then
-            generator.generate "config.jsonc" options.settings
           else
-            null;
+            generator.generate "config.jsonc" options.settings;
       };
-      flags = optionals (options ? configFile || options ? settings) [
+      flags = [
         "--config"
         "$out/fastfetch/config.jsonc"
       ];

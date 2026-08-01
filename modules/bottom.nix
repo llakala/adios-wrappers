@@ -42,17 +42,15 @@
       inherit (inputs.nixpkgs.pkgs) formats;
       generator = formats.toml {};
     in
-    assert !(options ? settings && options ? configFile);
+    assert options ? settings != options ? configFile;
     inputs.mkWrapper {
       inherit (options) package;
       symlinks = {
         "$out/bottom/bottom.toml" =
           if options ? configFile then
             options.configFile
-          else if options ? settings then
-            generator.generate "bottom.toml" options.settings
           else
-            null;
+            generator.generate "bottom.toml" options.settings;
       };
       environment = {
         XDG_CONFIG_HOME = "$out";

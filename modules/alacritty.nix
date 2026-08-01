@@ -42,17 +42,15 @@
       inherit (inputs.nixpkgs.pkgs) formats;
       generator = formats.toml {};
     in
-    assert !(options ? settings && options ? configFile);
+    assert options ? settings != options ? configFile;
     inputs.mkWrapper {
       inherit (options) package;
       symlinks = {
         "$out/alacritty/alacritty.toml" =
           if options ? configFile then
             options.configFile
-          else if options ? settings then
-            generator.generate "alacritty.toml" options.settings
           else
-            null;
+            generator.generate "alacritty.toml" options.settings;
       };
       flags = [
         "--config-file"
