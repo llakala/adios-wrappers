@@ -38,17 +38,20 @@
 
   impl =
     { options, inputs }:
-    assert !(options ? flags && options ? configFile);
-    if options ? flags then
-      inputs.mkWrapper {
-        inherit (options) package flags;
-      }
-    else
-      inputs.mkWrapper {
-        environment = {
-          RIPGREP_CONFIG_PATH = options.configFile or null;
-        };
-      };
+    assert options ? flags != options ? configFile;
+    inputs.mkWrapper (
+      if options ? flags then
+        {
+          inherit (options) package flags;
+        }
+      else
+        {
+          inherit (options) package;
+          environment = {
+            RIPGREP_CONFIG_PATH = options.configFile or null;
+          };
+        }
+    );
 
   meta = {
     maintainers = [ "llakala" ];

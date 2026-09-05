@@ -60,19 +60,17 @@
         } " = ";
       };
     in
-    assert !(options ? settings && options ? configFile);
+    assert options ? settings != options ? configFile;
     inputs.mkWrapper {
       inherit (options) package;
       symlinks = {
         "$out/btop/btop.conf" =
           if options ? configFile then
             options.configFile
-          else if options ? settings then
-            writeText "btop.conf" (toKeyValue options.settings)
           else
-            null;
+            writeText "btop.conf" (toKeyValue options.settings);
       };
-      flags = optionals (options ? configFile || options ? settings) [
+      flags = [
         "--config"
         "$out/btop/btop.conf"
       ];

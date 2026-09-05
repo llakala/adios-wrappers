@@ -42,22 +42,19 @@
     { options, inputs }:
     let
       inherit (inputs.nixpkgs.pkgs) formats;
-      inherit (inputs.nixpkgs.lib) optionals;
       generator = formats.json {};
     in
-    assert !(options ? settings && options ? configFile);
+    assert options ? settings != options ? configFile;
     inputs.mkWrapper {
       inherit (options) package;
       symlinks = {
         "$out/hyfetch/hyfetch.json" =
           if options ? configFile then
             options.configFile
-          else if options ? settings then
-            generator.generate "hyfetch.json" options.settings
           else
-            null;
+            generator.generate "hyfetch.json" options.settings;
       };
-      flags = optionals (options ? configFile || options ? settings) [
+      flags = [
         "--config-file"
         "$out/hyfetch/hyfetch.json"
       ];
