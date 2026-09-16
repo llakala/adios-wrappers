@@ -44,16 +44,14 @@
           inherit (adios.lib) merge;
           generator = formats.toml {};
           default =
-            assert !(options ? settings && options ? configFile);
+            assert options ? settings != options ? configFile;
             {
               inherit (options) package;
               environment.STARSHIP_CONFIG =
                 if options ? configFile then
                   options.configFile
-                else if options ? settings then
-                  generator.generate "starship.toml" options.settings
                 else
-                  null;
+                  generator.generate "starship.toml" options.settings;
             };
         in
         # Allow mutators to change the default value, with the mutators taking

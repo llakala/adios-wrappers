@@ -36,7 +36,7 @@
       inherit (inputs.nixpkgs.pkgs) formats;
       generator = formats.toml {};
     in
-    assert !(options ? settings && options ? configFile);
+    assert options ? settings != options ? configFile;
     inputs.mkWrapper {
       inherit (options) package;
       binaryPath = "$out/libexec/xdg-desktop-portal-termfilechooser";
@@ -44,10 +44,8 @@
         "$out/xdg-desktop-portal-termfilechooser/config" =
           if options ? configFile then
             options.configFile
-          else if options ? settings then
-            (generator.generate "config" options.settings)
           else
-            null;
+            (generator.generate "config" options.settings);
       };
       environment = {
         XDG_CONFIG_HOME = "$out";

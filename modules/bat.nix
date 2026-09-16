@@ -32,20 +32,20 @@
 
   impl =
     { options, inputs }:
-    assert !(options ? flags && options ? configFile);
-    if options ? flags then
-      inputs.mkWrapper {
-        inherit (options) package flags;
-      }
-    else if options ? configFile then
-      inputs.mkWrapper {
-        inherit (options) package;
-        environment = {
-          BAT_CONFIG_PATH = options.configFile;
-        };
-      }
-    else
-      options.package;
+    assert options ? flags != options ? configFile;
+    inputs.mkWrapper (
+      if options ? flags then
+        {
+          inherit (options) package flags;
+        }
+      else
+        {
+          inherit (options) package;
+          environment = {
+            BAT_CONFIG_PATH = options.configFile;
+          };
+        }
+    );
 
   meta = {
     maintainers = [ "llakala" ];

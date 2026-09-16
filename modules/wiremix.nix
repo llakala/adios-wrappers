@@ -40,17 +40,15 @@
       inherit (inputs.nixpkgs) pkgs;
       generator = pkgs.formats.toml {};
     in
-    assert !(options ? settings && options ? configFile);
+    assert options ? settings != options ? configFile;
     inputs.mkWrapper {
       inherit (options) package;
       symlinks = {
         "$out/wiremix/wiremix.toml" =
           if options ? configFile then
             options.configFile
-          else if options ? settings then
-            generator.generate "wiremix.toml" options.settings
           else
-            null;
+            generator.generate "wiremix.toml" options.settings;
       };
       environment = {
         XDG_CONFIG_HOME = "$out";
