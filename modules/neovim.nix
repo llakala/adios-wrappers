@@ -5,18 +5,14 @@
   };
 
   options = {
-    package = {
-      type = types.derivation;
-      defaultFunc = { inputs }: inputs.nixpkgs.pkgs.neovim-unwrapped;
-      description = "The neovim package to be wrapped.";
-    };
-
-    initLua = {
+    # this probably needs to be in the store? maybe a custom type utilizing
+    # lib.isStorePath
+    initLuaFile = {
       type = types.pathLike;
       description = ''
         `init.lua` file to be ran on startup.
 
-        Disjoint with `luaContents`
+        Disjoint with the initLuaContents option.
       '';
       example = ''
         (pkgs.writeText "init.lua" '''
@@ -24,19 +20,17 @@
          ''')
       '';
     };
-
-    luaContents = {
+    initLuaContents = {
       type = types.string;
       description = ''
         The contents of the `init.lua` file to be ran on startup.
 
-        Disjoint with `initLua`
+        Disjoint with the initLuaFile option.
       '';
       example = ''
         require("myConfig")
       '';
     };
-
     aliases = {
       type = types.listOf types.string;
       description = ''
@@ -47,10 +41,9 @@
         "vim"
       ];
     };
-
     extraPackages = {
       type = types.listOf types.derivation;
-      description = "A list of extra packages to put in $PATH";
+      description = "A list of extra packages to be included in neovim's $PATH";
       example = ''
         with inputs.nixpkgs; [
           pkgs.rg
@@ -58,92 +51,106 @@
         ]
       '';
     };
-
     extraLuaPackages = {
-      type = types.any;
-      default = _: [];
+      type = types.function;
       description = ''
-        A function returning a list of extra needed lua packages.
+        A function returning a list of extra packages to be included in lua's $PATH.
       '';
       example = ''
         ps: [ ps.jsregexp ]
       '';
+      default = _: [];
     };
-
     startPlugins = {
       type = types.attrsOf types.pathLike;
       description = ''
-        An attrset of neovim *plugins* which get loaded on startup.
+        An attrset of neovim *plugins* which are loaded on startup.
 
-        If the value set is a string, it will be loaded at runtime rather than
-        build time allowing a "hot reloading" of sorts.
+        Your personal config should be declared as a plugin here, and then loaded
+        via the 'initLuaFile'/'initLuaContents' option:
 
-        Personal config should be written in a plugin here, and then it can be
-        loaded with:
         ```lua
+        -- this loads nvim/lua/init.lua
         require("init")
         ```
-        inside the `initLua` option.
 
-        A plugins structure is described [here](https://neovim.io/doc/user/pack/#package-create)
+        Plugins that are set to strings will be treated as absolute paths
+        and loaded impurely at runtime, rather than at buildtime. This allows
+        for "hot reloading", which is helpful inside a devshell.
+
+        A plugin's structure is described [here](https://neovim.io/doc/user/pack/#package-create).
       '';
       example = ''
         {
-          inherit (pkgs.vimPlugins) telescope;
-          # dev mode
-          myconfig = toString ./config;
+          inherit (pkgs.vimPlugins) fzf-lua nvim-surround;
+          custom-plugin = pkgs.callPackage ./startPlugins/foo.nix {};
+
+          # loading your personal config without hot reloading
+          myconfig = ./nvim;
+          # alternatively, setting up hot reloading inside a flake
+          myconfig = "/home/your-username/Projects/nixos-config/wrappers/neovim/nvim";
+          # and if you don't use flakes, this works too:
+          myconfig = toString ./nvim;
         }
       '';
     };
-
+    # TODO: support hot reloading here too? is it even possible to do that?
     optPlugins = {
-      type = types.attrsOf (
-        types.union [
-          types.path
-          types.derivation
-        ]
-      );
+      type = types.attrsOf (types.either types.path types.derivation);
       description = ''
-        A attrset of nvim plugins to load when needed.
+        A attrset of nvim plugins that are only loaded when `packadd` is called.
+
+        This follows the same ruleset as startPlugins, but doesn't support impure paths.
       '';
     };
-
     treesitterPackage = {
       type = types.derivation;
       description = ''
         The nvim-treesitter package to be used.
 
-        This should also include the grammars as dependencies, which can be done via either 
+        This should also include the grammars as dependencies, which can be done via either
         `nvim-treesitter.withAllGrammars` or `nvim-treesitter.withPlugins (p: [ p.foo p.bar ])`.
       '';
       example = "pkgs.vimPlugins.nvim-treesitter.withAllGrammars";
+    };
+    package = {
+      type = types.derivation;
+      description = "The neovim package to be wrapped.";
+      defaultFunc = { inputs }: inputs.nixpkgs.pkgs.neovim-unwrapped;
     };
   };
 
   impl =
     { inputs, options }:
-    assert options ? luaContents != options ? initLua;
     let
-      inherit (inputs.nixpkgs.pkgs) makeShellWrapper lndir stdenvNoCC writeText envsubst symlinkJoin;
+      inherit (builtins)
+        attrValues
+        baseNameOf
+        concatStringsSep
+        foldl'
+        hashString
+        isAttrs
+        isString
+        substring
+        ;
+      inherit (inputs.nixpkgs.pkgs)
+        envsubst
+        lndir
+        # TODO: use makeBinaryWrapper?
+        makeShellWrapper
+        stdenvNoCC
+        symlinkJoin
+        writeText
+        ;
       inherit (inputs.nixpkgs.lib)
+        escapeShellArgs
+        filterAttrs
+        getExe
+        getName
         getVersion
         makeBinPath
         mapAttrsToList
-        getExe
         removePrefix
-        filterAttrs
-        escapeShellArgs
-        getName
-        ;
-      inherit (builtins)
-        isAttrs
-        baseNameOf
-        substring
-        hashString
-        concatStringsSep
-        isString
-        attrValues
-        foldl'
         ;
 
       transformPlugins =
@@ -187,6 +194,10 @@
         in
         recurse "" false;
 
+      # TODO: this needs fixing, we're currently not using the benefits of the
+      # attrset form at all if we just take attrValues. whole idea is that the
+      # names are determined by the attribute names instead, we need to decide
+      # if that's valuable
       transformedOpt = transformPlugins (attrValues (options.optPlugins or {}));
       transformedStart = transformPlugins (attrValues (options.startPlugins or {}));
       transformedTreesitter = transformPlugins [ options.treesitterPackage ];
@@ -214,7 +225,8 @@
           luaEnv = options.package.lua.withPackages options.extraLuaPackages;
           inherit (options.package.lua.pkgs) luaLib;
 
-          sourceLua = if options ? initLua then "dofile('${options.initLua}')" else options.luaContents;
+          sourceLua =
+            if options ? initLuaFile then "dofile('${options.initLuaFile}')" else options.initLuaContents;
         in
         writeText "init.lua" /* lua */ ''
           -- cannot be adios-wrappers, lua does not support `-` inside variables
@@ -226,6 +238,8 @@
           ${sourceLua}
         '';
 
+      # TODO: maybe move this to another file, so wrapper is under
+      # neovim/default.nix
       configDir = stdenvNoCC.mkDerivation {
         name = "neovim-configDir";
         nativeBuildInputs = [ envsubst ];
@@ -329,6 +343,7 @@
         "source ${configDir}/init.lua"
       ];
     in
+    assert options ? initLuaFile != options ? initLuaContents;
     stdenvNoCC.mkDerivation {
       pname = "neovim";
       version = getVersion options.package;
@@ -371,5 +386,7 @@
       };
     };
 
-  meta.maintainers = [ "Squawkykaka" ];
+  meta = {
+    maintainers = [ "Squawkykaka" ];
+  };
 }
