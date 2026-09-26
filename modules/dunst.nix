@@ -28,7 +28,7 @@
     };
 
     dropinFiles = {
-      type = types.listOf types.pathLike;
+      type = types.attrsOf types.pathLike;
       description = ''
         `*.conf` files to be injected into the wrapped package alongside the main configuration.
 
@@ -50,7 +50,7 @@
   impl =
     { options, inputs }:
     let
-      inherit (builtins) listToAttrs;
+      inherit (builtins) attrNames listToAttrs;
       inherit (inputs.nixpkgs.pkgs) writeText;
     in
     inputs.mkWrapper {
@@ -67,10 +67,10 @@
       // (
         if options ? dropinFiles then
           listToAttrs (
-            map (path: {
-              name = "$out/dunst/dunstrc.d/${baseNameOf path}";
-              value = path;
-            }) options.dropinFiles
+            map (name: {
+              name = "$out/dunst/dunstrc.d/${name}";
+              value = options.dropinFiles.${name};
+            }) (attrNames options.dropinFiles)
           )
         else
           {}
