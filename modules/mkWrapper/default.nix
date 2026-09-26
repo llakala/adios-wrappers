@@ -28,17 +28,18 @@ in {
       description = ''
         The name of the binary to be wrapped.
 
-        This sets the `meta.mainProgram` of the wrapped package, and the default `binaryPath` to wrap with.
+        This sets the `meta.mainProgram` of the wrapped package, and the sole entry of `binaryPaths` to wrap with.
       '';
       defaultFunc = { options }: options.package.meta.mainProgram or options.pname;
     };
-    binaryPath = {
-      type = types.string;
-      defaultFunc = { options }: "$out/bin/${options.binaryName}";
+    binaryPaths = {
+      type = types.listOf types.string;
+      defaultFunc = { options }: [ "$out/bin/${options.binaryName}" ];
       description = ''
-        The path of the binary within the input derivation to be wrapped.
+        The path of the binaries within the input derivation to be wrapped.
 
-        This should only be set if the binary isn't inside $out/bin. If it is, `binaryName` can be used instead.
+        This should only be set if the binary isn't inside $out/bin, or if multiple binaries should be wrapped.
+        If it is a single binary inside $out/bin, `binaryName` can be used instead.
       '';
     };
     preWrap = {
@@ -160,9 +161,11 @@ in {
           if environmentStr == "" && options.wrapperArgs == "" && options.flags == [] then
             ""
           else
-            ''
-              wrapProgram ${options.binaryPath} ${environmentStr} ${flagsStr} ${ifNotNull options.wrapperArgs}
-            ''
+            concatStringsSep "\n" (
+              map (binaryPath: ''
+                wrapProgram ${binaryPath} ${environmentStr} ${flagsStr} ${ifNotNull options.wrapperArgs}
+              '') options.binaryPaths
+            )
         }
         ${ifNotNull options.postWrap}
       '';
