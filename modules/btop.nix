@@ -27,9 +27,10 @@
       '';
     };
 
-    # TODO: Themes are located in $out/share/btop/themes
-    # should provide a option here to be able to set them
-    # though I don't know what route would be best for that
+    themes = {
+      type = types.attrsOf types.pathLike;
+      description = "Theme files to be injected into the wrapped package's themes directory.";
+    };
 
     package = {
       type = types.derivation;
@@ -46,8 +47,8 @@
     { options, inputs }:
     let
       inherit (inputs.nixpkgs.pkgs) writeText;
-      inherit (inputs.nixpkgs.lib) generators optionals;
-      inherit (builtins) isBool isString;
+      inherit (inputs.nixpkgs.lib) generators optionals optionalAttrs;
+      inherit (builtins) isBool isString attrNames listToAttrs;
 
       # Mostly copied from home-manager
       # https://github.com/nix-community/home-manager/blob/master/modules/programs/mpv.nix
@@ -74,11 +75,24 @@
             writeText "btop.conf" (toKeyValue options.settings)
           else
             null;
-      };
-      flags = optionals (options ? configFile || options ? settings) [
-        "--config"
-        "$out/btop/btop.conf"
-      ];
+      }
+      // optionalAttrs (options ? themes) (
+        listToAttrs (
+          map (name: {
+            name = "$out/btop/themes/${name}";
+            value = options.themes.${name};
+          }) (attrNames options.themes)
+        )
+      );
+      flags =
+        optionals (options ? configFile || options ? settings) [
+          "--config"
+          "$out/btop/btop.conf"
+        ]
+        ++ optionals (options ? themes) [
+          "--themes-dir"
+          "$out/btop/themes"
+        ];
     };
 
   meta = {
