@@ -1,16 +1,19 @@
 ---
-import { highlighter } from "../lib/highlight";
+import { highlighter, kororaHighlighter } from "../lib/highlight";
 
 interface Props {
-    code: string;
-    language: string;
+  code: string;
+  language: string;
 }
 
 const { code, language } = Astro.props;
 
-let highlighted = highlighter.highlight(code, {
-    language,
-}).value;
+let highlighted =
+  language == "korora"
+    ? kororaHighlighter(code)
+    : highlighter.highlight(code, {
+        language,
+      }).value;
 ---
 
 <pre><code class={`hljs hljs-${language}`} set:html={highlighted} /></pre>
