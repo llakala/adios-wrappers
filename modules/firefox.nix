@@ -46,6 +46,13 @@
       '';
     };
 
+    nativeMessagingHosts = {
+      type = types.listOf types.derivation;
+      description = ''
+        Additional packages containing native messaging hosts that should be made available to Firefox extensions.
+      '';
+    };
+
     package = {
       type = types.derivation;
       default = promise ({ inputs }: inputs.nixpkgs.pkgs.firefox-unwrapped);
@@ -82,6 +89,7 @@
           map (file: "${file}") options.autoConfigFiles
         else
           null;
+      nativeMessagingHosts = options.nativeMessagingHosts or null;
     })
   );
 
