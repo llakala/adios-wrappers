@@ -6,7 +6,7 @@
 
   options = {
     autoConfigFiles = {
-      type = types.listOf types.pathLike;
+      type = types.listOf (types.either types.path types.derivation);
       description = ''
         `autoconfig.js` files to be injected into the wrapped package.
 
@@ -25,7 +25,7 @@
       '';
     };
     policiesFiles = {
-      type = types.listOf types.pathLike;
+      type = types.listOf (types.either types.path types.derivation);
       description = ''
         JSON files containing policies to be injected into the wrapped package.
 
