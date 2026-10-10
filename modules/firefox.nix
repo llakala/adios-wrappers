@@ -71,26 +71,21 @@
     { options, inputs }:
     let
       inherit (inputs.nixpkgs.pkgs) wrapFirefox;
-      inherit (builtins) filter attrNames;
-      filterNullAttrs = set: removeAttrs set (filter (name: isNull set.${name}) (attrNames set));
     in
-    wrapFirefox options.package (filterNullAttrs {
-      extraPolicies = options.policies or null;
+    wrapFirefox options.package {
+      ${if options ? policies then "extraPolicies" else null} = options.policies;
       # From my testing, these options need to be coerced to store paths.
       # If you know of a workaround to allow impure paths to be used here,
       # please make a PR!
-      extraPoliciesFiles =
-        if options ? policiesFiles then
-          map (file: "${file}") options.policiesFiles
-        else
-          null;
-      extraPrefsFiles =
-        if options ? autoConfigFiles then
-          map (file: "${file}") options.autoConfigFiles
-        else
-          null;
-      nativeMessagingHosts = options.nativeMessagingHosts or null;
-    })
+      ${if options ? policiesFiles then "extraPoliciesFiles" else null} = map (
+        file: "${file}"
+      ) options.policiesFiles;
+      ${if options ? autoConfigFiles then "extraPrefsFiles" else null} = map (
+        file: "${file}"
+      ) options.autoConfigFiles;
+      ${if options ? nativeMessagingHosts then "nativeMessagingHosts" else null} =
+        options.nativeMessagingHosts;
+    }
   );
 
   meta = {
