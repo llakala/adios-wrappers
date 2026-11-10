@@ -19,7 +19,7 @@
 
         See the nushell [documentation](https://www.nushell.sh/book/configuration.html) for valid options.
       '';
-      mergeFunc = merge.strings.concatLines;
+      merge = merge.strings.concatLines;
     };
     sourceFiles = {
       type = types.listOf types.pathLike;
@@ -27,7 +27,7 @@
         A list of paths to source in the `config.nu` file.
         This can be used to import extra files, and can be used with impurity
       '';
-      mergeFunc = merge.lists.concat;
+      merge = merge.lists.concat;
     };
 
     extraPackages = {
@@ -35,7 +35,7 @@
       description = ''
         Runtime dependencies to be injected into the wrapped package's path.
       '';
-      mergeFunc = merge.lists.concat;
+      merge = merge.lists.concat;
     };
 
     package = {

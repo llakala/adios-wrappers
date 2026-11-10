@@ -3,7 +3,7 @@ let
   filterAttrValues = pred: set: removeAttrs set (filter (name: !pred set.${name}) (attrNames set));
   keysToRemove = [
     "defaultFunc"
-    "mergeFunc"
+    "merge"
     "default"
   ];
   flake = getFlake (toString ../.);

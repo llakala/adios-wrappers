@@ -22,7 +22,7 @@
 
         Disjoint with the `configFile` option.
       '';
-      mergeFunc = merge.attrs.recursively;
+      merge = merge.attrs.recursively;
     };
     configFile = {
       type = types.pathLike;

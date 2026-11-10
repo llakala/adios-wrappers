@@ -26,7 +26,7 @@
         default-bg = "#000000";
         default-fg = "#FFFFFF";
       };
-      mergeFunc = merge.attrs.recursively;
+      merge = merge.attrs.recursively;
     };
     keybinds = {
       type = types.attrs;
@@ -46,7 +46,7 @@
         "<Right>" = "navigate next";
         "[fullscreen] <C-i>" = "zoom in";
       };
-      mergeFunc = merge.attrs.recursively;
+      merge = merge.attrs.recursively;
     };
     sourceFiles = {
       type = types.listOf types.pathLike;
@@ -59,7 +59,7 @@
 
         Disjoint with `settings` and `keybinds` options.
       '';
-      mergeFunc = merge.lists.concat;
+      merge = merge.lists.concat;
     };
 
     package = {
