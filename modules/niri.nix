@@ -13,7 +13,7 @@
 
         See the niri [documentation](https://github.com/niri-wm/niri/wiki/Configuration:-Introduction) for syntax and valid options.
       '';
-      mergeFunc = merge.lists.concat;
+      merge = merge.lists.concat;
     };
 
     package = {

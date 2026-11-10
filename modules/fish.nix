@@ -12,7 +12,7 @@
   };
 
   options = {
-    # TODO: add mergeFunc for completions and functions options
+    # TODO: add merge semantics for completions and functions options
     completions = {
       type = types.attrsOf types.string;
       description = ''
@@ -30,7 +30,7 @@
 
         Disjoint with the `completions` option.
       '';
-      mergeFunc = merge.lists.concat;
+      merge = merge.lists.concat;
     };
 
     functions = {
@@ -50,7 +50,7 @@
 
         Disjoint with the `functions` option.
       '';
-      mergeFunc = merge.lists.concat;
+      merge = merge.lists.concat;
     };
 
     abbreviations = {
@@ -91,11 +91,10 @@
           }
         ];
       };
-      mergeFunc = merge.attrs.flat;
+      merge = merge.attrs.flat;
     };
 
-    # TODO: add impure variant of this, and make abbreviations work without
-    # merging this
+    # TODO: add impure variant of this
     interactiveShellInit = {
       type = types.string;
       description = ''
@@ -103,66 +102,64 @@
 
         Only ran when Fish is initialized interactively.
       '';
-      mergeFunc =
+      default = promise (
+        { options }:
         let
           inherit (builtins) attrNames concatMap concatStringsSep isAttrs isString replaceStrings;
-          abbrsToString =
-            let
-              escapeQuotes = replaceStrings [ "'" ] [ "\\'" ];
-              abbrToString =
-                {
-                  setCursor ? false,
-                  command,
-                  abbr,
-                  expansion
-                }:
-                "abbr --add "
-                + (if setCursor then "--set-cursor " else "")
-                + (if command != null then "--command ${command} " else "")
-                + "-- ${abbr} '${escapeQuotes expansion}'";
-              flattenAbbrs =
-                command: abbrs:
-                concatMap (
-                  abbr:
-                  let
-                    expansion = abbrs.${abbr};
-                  in
-                  if isString expansion then
-                    [
-                      (abbrToString {
-                        inherit command abbr expansion;
-                      })
-                    ]
-                  else if isAttrs expansion then
-                    [
-                      (abbrToString {
-                        inherit command abbr;
-                        inherit (expansion) setCursor expansion;
-                      })
-                    ]
-                  else
-                    # Note that fish doesn't work with "nested" commands. You would
-                    # think `--command 'foo bar' -- b baz` would work. but it
-                    # doesn't. While technically the code could recurse twice here,
-                    # the type prevents it
-                    concatMap (flattenAbbrs abbr) expansion
-                ) (attrNames abbrs);
-            in
-            abbrs: concatStringsSep "\n" (flattenAbbrs null abbrs);
+          escapeQuotes = replaceStrings [ "'" ] [ "\\'" ];
+          abbrToString =
+            {
+              setCursor ? false,
+              command,
+              abbr,
+              expansion
+            }:
+            "abbr --add "
+            + (if setCursor then "--set-cursor " else "")
+            + (if command != null then "--command ${command} " else "")
+            + "-- ${abbr} '${escapeQuotes expansion}'";
+          flattenAbbrs =
+            command: abbrs:
+            concatMap (
+              abbr:
+              let
+                expansion = abbrs.${abbr};
+              in
+              if isString expansion then
+                [
+                  (abbrToString {
+                    inherit command abbr expansion;
+                  })
+                ]
+              else if isAttrs expansion then
+                [
+                  (abbrToString {
+                    inherit command abbr;
+                    inherit (expansion) setCursor expansion;
+                  })
+                ]
+              else
+                # Note that fish doesn't work with "nested" commands. You would
+                # think `--command 'foo bar' -- b baz` would work. but it
+                # doesn't. While technically the code could recurse twice here,
+                # the type prevents it
+                concatMap (flattenAbbrs abbr) expansion
+            ) (attrNames abbrs);
+          abbrsToString = abbrs: concatStringsSep "\n" (flattenAbbrs null abbrs);
         in
-        { mutators, options }:
         concatStringsSep "\n" (
           [
             "status is-interactive || exit 0"
           ]
-          ++ mutators
           ++ (
             if options ? abbreviations then
               [ (abbrsToString options.abbreviations) ]
             else
               []
           )
-        );
+        )
+      );
+      merge = merge.strings.concatLines;
     };
 
     package = {

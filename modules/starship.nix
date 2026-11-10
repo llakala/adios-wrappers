@@ -1,10 +1,4 @@
-{
-  types,
-  merge,
-  promise,
-  assertions,
-  ...
-}:
+{ types, promise, assertions, ... } @ adios:
 {
   inputs = {
     mkWrapper.from = { parent }: parent.mkWrapper;
@@ -41,27 +35,23 @@
         This is primarily an implementation detail of how the git module mutates the starship wrapper.
         Setting or mutating it yourself isn't recommended.
       '';
-      mutators = []; # Hack to make the mergeFunc be called with no mutators
-      mergeFunc =
-        { mutators, options, inputs }:
+      default = promise (
+        { options, inputs }:
         let
-          inherit (inputs.nixpkgs.lib) recursiveUpdate;
           inherit (inputs.nixpkgs.pkgs) formats;
           generator = formats.toml {};
-          default = {
-            inherit (options) package;
-            environment.STARSHIP_CONFIG =
-              if options ? configFile then
-                options.configFile
-              else if options ? settings then
-                generator.generate "starship.toml" options.settings
-              else
-                null;
-          };
-        in
-        # Allow mutators to change the default value, with the mutators taking
-        # priority if the key is the same
-        recursiveUpdate default (merge.attrs.recursively { inherit mutators; });
+        in {
+          inherit (options) package;
+          environment.STARSHIP_CONFIG =
+            if options ? configFile then
+              options.configFile
+            else if options ? settings then
+              generator.generate "starship.toml" options.settings
+            else
+              null;
+        }
+      );
+      merge = adios.lib.inject; # essentially recursiveUpdate on the default
     };
 
     package = {
@@ -90,7 +80,7 @@
     );
   };
 
-  inputs.mkWrapper.options = promise ({ options, inputs }: options.wrapperAttrs);
+  inputs.mkWrapper.options = promise ({ options }: options.wrapperAttrs);
   result = promise ({ results }: results.mkWrapper);
 
   meta = {

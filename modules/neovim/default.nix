@@ -127,7 +127,7 @@
   ];
 
   inputs.mkWrapper.options = promise (
-    { inputs, options }:
+    { options, inputs }:
     let
       inherit (builtins)
         attrValues

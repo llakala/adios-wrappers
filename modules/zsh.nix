@@ -39,14 +39,14 @@
       description = ''
         zsh files to be sourced after the `zshrc` option in the wrapped package's `.zshrc` file.
       '';
-      mergeFunc = merge.lists.concat;
+      merge = merge.lists.concat;
     };
     extraZshrcFiles = {
       type = types.listOf types.pathLike;
       description = ''
         zsh files to be sourced at the end of the wrapped package's `.zshrc` file.
       '';
-      mergeFunc = merge.lists.concat;
+      merge = merge.lists.concat;
     };
 
     settings = {
@@ -62,7 +62,7 @@
         autocd = false;
         beep = false;
       };
-      mergeFunc = merge.attrs.recursively;
+      merge = merge.attrs.recursively;
     };
 
     variables = {
@@ -74,7 +74,7 @@
         HISTFILE = "~/.histfile";
         HISTSIZE = 5000;
       };
-      mergeFunc = merge.attrs.recursively;
+      merge = merge.attrs.recursively;
     };
 
     aliases = {
@@ -100,7 +100,7 @@
           command = "| grep";
         };
       };
-      mergeFunc = merge.attrs.recursively;
+      merge = merge.attrs.recursively;
     };
 
     plugins = {
@@ -130,7 +130,7 @@
           }
         ];
       '';
-      mergeFunc = merge.lists.concat;
+      merge = merge.lists.concat;
     };
 
     extraPackages = {
@@ -138,7 +138,7 @@
       description = ''
         Runtime dependencies to be injected into the wrapped package's path.
       '';
-      mergeFunc = merge.lists.concat;
+      merge = merge.lists.concat;
     };
 
     package = {
