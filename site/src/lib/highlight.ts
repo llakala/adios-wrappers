@@ -1,40 +1,39 @@
-import hljs, { type HLJSApi } from 'highlight.js';
+import hljs from 'highlight.js';
 import { Marked } from 'marked';
 import { markedHighlight } from 'marked-highlight';
 
-function kororaHighlighter(hljs: HLJSApi) {
-  return {
-    name: 'Korora Types',
-    aliases: ['korora', 'adios'],
-    contains: [
-      {
-        className: 'built_in',
-        begin: '[a-zA-Z]+(?=<)',
-        relevance: 1,
-      },
-      {
-        className: 'literal',
-        begin: '[a-zA-Z]+',
-        relevance: 0,
-        keywords: {
-          // Types from
-          // https://github.com/llakala/lladios/blob/main/korora/default.nix
+const polymorphicColors = ["#a37acc", "#86b300", "#22a4e6", "#eba400"]
+const staticColor = "#f07171"
+export function kororaHighlighter(name: string) {
+  let output = ""
+  let nextSection = ""
+  let indentation = 0;
+  for (const char of name) {
+    if (char == "<") {
+      output += `<span style="color: ${polymorphicColors[indentation]}">${nextSection}</span>`
+      indentation += 1
+      output += "&lt"
+      nextSection = ""
+    } else if (char == ">") {
+      output += `<span style="color: ${staticColor};">${nextSection}</span>`
+      indentation -= 1
+      output += "&gt"
+      nextSection = ""
+    }
+    else if (char == ",") {
+      output += `<span style="color: ${staticColor};">${nextSection}</span>`
+      output += ","
+      nextSection = ""
+    }
+    else {
+      nextSection += char;
+    }
+  }
 
-          // Primitive types
-          keyword:
-            'string str any never int float number bool null attrs list function path pathLike derivation type',
-        }
-      },
-      {
-        className: 'punctuation',
-        begin: '>|,|<',
-        relevance: 0,
-      }
-    ]
-  };
+  output += `<span style="color: ${staticColor};">${nextSection}</span>`
+
+  return output
 }
-
-hljs.registerLanguage('korora', kororaHighlighter)
 
 export let highlighter = hljs;
 
