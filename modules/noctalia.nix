@@ -35,6 +35,12 @@
         Disjoint with the `settings` option.
       '';
     };
+    extraPackages = {
+      type = types.listOf types.derivation;
+      description = ''
+        Packages to be automatically added to noctalia's path.
+      '';
+    };
     package = {
       type = types.derivation;
       description = "The noctalia package to be wrapped.";
@@ -49,6 +55,7 @@
   inputs.mkWrapper.options = promise (
     { options, inputs }:
     let
+      inherit (inputs.nixpkgs.lib) makeBinPath;
       generator = inputs.nixpkgs.pkgs.formats.toml {};
     in {
       inherit (options) package;
@@ -61,6 +68,13 @@
           else
             null;
       };
+      wrapperArgs =
+        if options ? extraPackages then
+          ''
+            --prefix PATH : ${makeBinPath options.extraPackages}
+          ''
+        else
+          "";
       environment = {
         NOCTALIA_CONFIG_HOME = "$out";
       };
