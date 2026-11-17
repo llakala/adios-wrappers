@@ -154,7 +154,7 @@
             null;
       };
       environment = {
-        XDG_CONFIG_HOME = "$out";
+        DIRENV_CONFIG = "$out/direnv";
       };
     }
   );
