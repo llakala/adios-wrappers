@@ -20,8 +20,17 @@
 
         See the [manual](https://mpv.io/manual/stable/) for valid options.
 
+        Sets inside this option are treated as [profiles](https://mpv.io/manual/stable/#profiles):
+
         Disjoint with the `configFile` option.
       '';
+      example = {
+        volume-max = 150;
+        gui = {
+          profile-cond = ''p["player-operation-mode"]=="pseudo-gui"'';
+          idle = "once";
+        };
+      };
     };
     configFile = {
       type = types.pathLike;
@@ -74,41 +83,57 @@
     { options, inputs }:
     let
       inherit (inputs.nixpkgs.pkgs) mpv writeText linkFarm;
-      inherit (inputs.nixpkgs.lib) generators concatStringsSep mapAttrsToList optional;
-      inherit (builtins) typeOf stringLength;
+      inherit (inputs.nixpkgs.lib)
+        attrsToList
+        concatMapAttrsStringSep
+        concatMapStrings
+        optional
+        optionalString
+        ;
+      inherit (builtins) typeOf stringLength isAttrs partition;
 
-      # Most of this copied from https://github.com/nix-community/home-manager/blob/master/modules/programs/mpv.nix
-      renderOption =
-        option:
-        rec {
-          int = toString option;
-          float = int;
-          bool = if option then "yes" else "no";
-          string = option;
-        }
-        .${typeOf option};
-
-      renderOptionValue =
-        value:
+      # Some of this was copied from https://github.com/nix-community/home-manager/blob/master/modules/programs/mpv.nix
+      renderOptionLine =
+        { name, value }:
         let
-          rendered = renderOption value;
+          rendered =
+            rec {
+              int = toString value;
+              float = int;
+              bool = if value then "yes" else "no";
+              string = value;
+            }
+            .${typeOf value};
+
           length = toString (stringLength rendered);
         in
-        "%${length}%${rendered}";
+        "${name}=%${length}%${rendered}\n";
 
-      renderOptions = generators.toKeyValue {
-        mkKeyValue = generators.mkKeyValueDefault { mkValueString = renderOptionValue; } "=";
-        listsAsDuplicateKeys = true;
-      };
+      renderOptions = concatMapStrings renderOptionLine;
 
-      renderKeybinds =
-        keybinds: concatStringsSep "\n" (mapAttrsToList (name: value: "${name} ${value}") keybinds);
+      renderProfile =
+        { name, value }:
+        ''
+
+          [${name}]
+        ''
+        + renderOptions (attrsToList value);
+
+      renderSettings =
+        settings:
+        let
+          split = partition (kv: !(isAttrs kv.value)) (attrsToList settings);
+        in
+        renderOptions split.right
+        + (optionalString (split.wrong != []) (concatMapStrings renderProfile split.wrong));
+
+      renderKeybinds = concatMapAttrsStringSep "\n" (name: value: "${name} ${value}");
 
       configFile =
         if options ? configFile then
           options.configFile
         else if options ? settings then
-          writeText "mpv.conf" (renderOptions options.settings)
+          writeText "mpv.conf" (renderSettings options.settings)
         else
           null;
       keybindsFile =
