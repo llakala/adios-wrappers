@@ -71,7 +71,19 @@
         inherit (inputs.nixpkgs.lib) getExe;
       in
       ''
+        set -gx DIRENV_EXE_PATH ${getExe result}
         ${getExe result} hook fish | source
+      ''
+    );
+
+    "/zsh".interactiveShellInit = promise (
+      { inputs, result }:
+      let
+        inherit (inputs.nixpkgs.lib) getExe;
+      in
+      ''
+        export DIRENV_EXE_PATH=${getExe result}
+        eval "(${getExe result} hook zsh)"
       ''
     );
 
@@ -142,7 +154,7 @@
             null;
       };
       environment = {
-        XDG_CONFIG_HOME = "$out";
+        DIRENV_CONFIG = "$out/direnv";
       };
     }
   );
