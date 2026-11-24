@@ -36,6 +36,7 @@
           acceptNth = types.string;
           delimitNth = types.string;
           noEmpty = types.bool;
+          index = types.bool;
         }).override
           { total = false; };
       description = ''
@@ -101,6 +102,7 @@
             "--nth-delimiter=${options.dmenuFlags.delimitNth}"
           ]
           ++ optionals (options.dmenuFlags ? noEmpty && options.dmenuFlags.noEmpty) [ "--no-run-if-empty" ]
+          ++ optionals (options.dmenuFlags ? index && options.dmenuFlags.index) [ "--index" ]
         else
           [];
       logsFlags =
