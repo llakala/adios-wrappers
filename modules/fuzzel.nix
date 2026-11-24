@@ -36,6 +36,7 @@
           acceptNth = types.string;
           delimitNth = types.string;
           noEmpty = types.bool;
+          index = types.bool;
         }).override
           { total = false; };
       description = ''
@@ -101,6 +102,7 @@
             "--nth-delimiter=${options.dmenuFlags.delimitNth}"
           ]
           ++ optionals (options.dmenuFlags ? noEmpty && options.dmenuFlags.noEmpty) [ "--no-run-if-empty" ]
+          ++ optionals (options.dmenuFlags ? index && options.dmenuFlags.index) [ "--index" ]
         else
           [];
       logsFlags =
@@ -108,7 +110,7 @@
           optionals (options.logFlags ? logLevel) [ "--log-level=${options.logFlags.logLevel}" ]
           ++ optionals (options.logFlags ? colorize) [ "--log-colorize=${options.logFlags.colorize}" ]
           ++ optionals (options.logFlags ? noSyslog && options.logFlags.noSyslog) [ "--log-no-syslog" ]
-          ++ optionals (options.logFlags ? printTiming && options.logFlags.printTming) [
+          ++ optionals (options.logFlags ? printTiming && options.logFlags.printTiming) [
             "--print-timing-info"
           ]
         else
