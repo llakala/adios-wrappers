@@ -108,7 +108,7 @@
           optionals (options.logFlags ? logLevel) [ "--log-level=${options.logFlags.logLevel}" ]
           ++ optionals (options.logFlags ? colorize) [ "--log-colorize=${options.logFlags.colorize}" ]
           ++ optionals (options.logFlags ? noSyslog && options.logFlags.noSyslog) [ "--log-no-syslog" ]
-          ++ optionals (options.logFlags ? printTiming && options.logFlags.printTming) [
+          ++ optionals (options.logFlags ? printTiming && options.logFlags.printTiming) [
             "--print-timing-info"
           ]
         else
