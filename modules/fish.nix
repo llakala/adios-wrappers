@@ -56,16 +56,22 @@
     abbreviations = {
       type =
         let
+          customAbbr =
+            (types.struct "abbrWithCursor" {
+              expansion = types.string;
+              setCursor = types.bool;
+              position = types.enum "position" [
+                "command"
+                "anywhere"
+              ];
+            }).override
+              {
+                total = false;
+                verify = v: v ? expansion;
+                explain = v: "attribute 'expansion' required";
+              };
           # Just renamed for a nicer internal name
-          abbrType = types.rename "abbr" (
-            types.either types.string (
-              types.struct "abbrWithCursor" {
-                setCursor = types.bool;
-                expansion = types.string;
-              }
-            )
-
-          );
+          abbrType = types.rename "abbr" (types.either types.string customAbbr);
         in
         types.attrsOf (types.either abbrType (types.listOf (types.attrsOf abbrType)));
       description = ''
@@ -114,19 +120,21 @@
         { inputs, options }:
         let
           inherit (builtins) attrNames concatMap concatStringsSep isAttrs isString replaceStrings;
-          inherit (inputs.nixpkgs.lib) makeBinPath splitString;
-          paths = splitString ":" (makeBinPath options.extraPackages);
+          inherit (inputs.nixpkgs.lib) makeBinPath;
+          paths = replaceStrings [ ":" ] [ " " ] (makeBinPath options.extraPackages);
           escapeQuotes = replaceStrings [ "'" ] [ "\\'" ];
           abbrToString =
             {
-              setCursor ? false,
               command,
               abbr,
-              expansion
+              expansion,
+              setCursor ? false,
+              position ? null
             }:
             "abbr --add "
             + (if setCursor then "--set-cursor " else "")
             + (if command != null then "--command ${command} " else "")
+            + (if position != null then "--position ${position} " else "")
             + "-- ${abbr} '${escapeQuotes expansion}'";
           flattenAbbrs =
             command: abbrs:
@@ -143,10 +151,12 @@
                 ]
               else if isAttrs expansion then
                 [
-                  (abbrToString {
-                    inherit command abbr;
-                    inherit (expansion) setCursor expansion;
-                  })
+                  (abbrToString (
+                    {
+                      inherit command abbr;
+                    }
+                    // expansion
+                  ))
                 ]
               else
                 # Note that fish doesn't work with "nested" commands. You would
@@ -160,7 +170,7 @@
         concatStringsSep "\n" (
           (
             if options ? extraPackages then
-              [ "fish_add_path --path ${concatStringsSep " " paths}" ]
+              [ "fish_add_path --path ${paths}" ]
             else
               []
           )
