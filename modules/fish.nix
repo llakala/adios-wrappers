@@ -110,18 +110,70 @@
 
     # TODO: add impure variant of this
     interactiveShellInit = {
-      type = types.string;
+      type = types.new {
+        name = "string-handling-awaiters";
+        verify = types.string.verify;
+        explain =
+          v:
+          if v.__adiosAwaiting or false then
+            ''
+              'await' / 'promise.map' was used on 'options.interactiveShellInit', but
+              abbreviation parsing has been moved outside the 'default', so awaiting is no
+              longer necessary.
+
+              Usage of the form:
+
+              ```nix
+              default = await (
+                prev:
+                '''
+                  ''${prev}
+                  your contents here
+                '''
+              );
+              ```
+
+              Can be migrated to:
+
+              ```nix
+                default = '''
+                  your contents here
+                ''';
+              ```
+            ''
+          else
+            (types.string.verify v);
+      };
       description = ''
         Shell initialization code to be automatically injected into the wrapped package.
 
         Only ran when Fish is initialized interactively.
       '';
-      default = promise (
-        { inputs, options }:
+      merge = merge.strings.concatLines;
+    };
+
+    package = {
+      type = types.derivation;
+      default = promise ({ inputs }: inputs.nixpkgs.pkgs.fish);
+      description = "The Fish package to be wrapped.";
+    };
+  };
+
+  assertions = [
+    (assertions.disjoint "completions" "completionsFiles")
+    (assertions.disjoint "functions" "functionsFiles")
+  ];
+
+  inputs.mkWrapper.options = promise (
+    { options, inputs }:
+    let
+      inherit (inputs.nixpkgs.pkgs) writeText;
+      inherit (inputs.nixpkgs.lib) makeBinPath;
+      inherit (builtins) attrNames concatStringsSep length listToAttrs replaceStrings;
+
+      abbrsToString =
         let
-          inherit (builtins) attrNames concatMap concatStringsSep isAttrs isString replaceStrings;
-          inherit (inputs.nixpkgs.lib) makeBinPath;
-          paths = replaceStrings [ ":" ] [ " " ] (makeBinPath options.extraPackages);
+          inherit (builtins) concatMap concatStringsSep isAttrs isString;
           escapeQuotes = replaceStrings [ "'" ] [ "\\'" ];
           abbrToString =
             {
@@ -165,54 +217,39 @@
                 # the type prevents it
                 concatMap (flattenAbbrs abbr) expansion
             ) (attrNames abbrs);
-          abbrsToString = abbrs: concatStringsSep "\n" (flattenAbbrs null abbrs);
         in
-        concatStringsSep "\n" (
-          (
-            if options ? extraPackages then
-              [ "fish_add_path --path ${paths}" ]
-            else
-              []
-          )
-          ++ [
-            "status is-interactive || exit 0"
-          ]
-          ++ (
-            if options ? abbreviations then
-              [ (abbrsToString options.abbreviations) ]
-            else
-              []
-          )
-        )
+        abbrs: concatStringsSep "\n" (flattenAbbrs null abbrs);
+
+      paths = replaceStrings [ ":" ] [ " " ] (makeBinPath options.extraPackages);
+      initLines = (
+        if options ? extraPackages then
+          [ "fish_add_path --path ${paths}" ]
+        else
+          []
+      )
+      ++ [
+        "status is-interactive || exit 0"
+      ]
+      ++ (
+        if options ? abbreviations then
+          [ (abbrsToString options.abbreviations) ]
+        else
+          []
+      )
+      ++ (
+        if options ? interactiveShellInit then
+          [ options.interactiveShellInit ]
+        else
+          []
       );
-      merge = merge.strings.concatLines;
-    };
-
-    package = {
-      type = types.derivation;
-      default = promise ({ inputs }: inputs.nixpkgs.pkgs.fish);
-      description = "The Fish package to be wrapped.";
-    };
-  };
-
-  assertions = [
-    (assertions.disjoint "completions" "completionsFiles")
-    (assertions.disjoint "functions" "functionsFiles")
-  ];
-
-  inputs.mkWrapper.options = promise (
-    { options, inputs }:
-    let
-      inherit (inputs.nixpkgs.pkgs) writeText;
-      inherit (builtins) listToAttrs attrNames;
     in {
       inherit (options) package;
       symlinks = {
         "$out/share/fish/vendor_conf.d/config.fish" =
-          if options ? interactiveShellInit then
-            writeText "config.fish" options.interactiveShellInit
+          if length initLines == 1 then
+            null
           else
-            null;
+            writeText "config.fish" (concatStringsSep "\n" initLines);
       }
       // (
         if options ? completionsFiles then
